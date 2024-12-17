@@ -1,0 +1,8 @@
+@import 'bootstrap/scss/functions';
+@import './variables';
+@import 'bootstrap/scss/bootstrap';
+$primary-bg: black;
+
+body {
+  background: $primary-bg;
+}
