@@ -6,6 +6,8 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 
+const { VITE_APP_PATH } = import.meta.env;
+
 function App() {
   const [count, setCount] = useState(0);
 
@@ -22,7 +24,7 @@ function App() {
 
   useEffect(() => {
     (async () => {
-      const res = await axios.get("https://randomuser.me/api/");
+      const res = await axios.get(VITE_APP_PATH);
       console.log(res);
       openModal();
 
@@ -99,7 +101,7 @@ function App() {
         </a>
       </div>
       <h1>Vite + React</h1>
-      <div className="card">
+      <div className="card_react">
         <button
           className="btn btn-primary"
           onClick={() => setCount((count) => count + 1)}
