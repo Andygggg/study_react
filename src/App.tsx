@@ -1,120 +1,46 @@
-import { useEffect, useRef, useState } from "react";
-import axios from "axios";
-import { Modal } from "bootstrap";
-
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
+import Welcome from "./views/WelcomeReact";
+import TestBootstrap from "./views/TestBootstrap";
+import List from "./views/Week1List";
 
-const { VITE_APP_PATH } = import.meta.env;
+import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0);
+const Navigation = () => {
+  const navigate = useNavigate();
 
-  // 將 modalRef 的類型改為 HTMLDivElement | null
-  const modalRef = useRef<HTMLDivElement | null>(null);
-  const customModal = useRef<Modal | null>(null);
-
-  // 初始化 modal
-  useEffect(() => {
-    if (modalRef.current) {
-      customModal.current = new Modal(modalRef.current);
-    }
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const res = await axios.get(VITE_APP_PATH);
-      console.log(res);
-      openModal();
-
-      setTimeout(() => {
-        closeModal();
-      }, 2000);
-    })();
-  }, []);
-
-  // 打開 modal
-  const openModal = () => {
-    customModal.current?.show();
+  const goToWelcome = () => {
+    navigate("/");
   };
 
-  // 關閉 modal
-  const closeModal = () => {
-    customModal.current?.hide();
+  const goToWeek1List = () => {
+    navigate("/Week1List");
   };
 
   return (
-    <>
-      <button
-        type="button"
-        className="btn btn-primary"
-        onClick={() => openModal()}
-      >
-        Launch demo modal
-      </button>
+    <div className="menu_navbar">
+      <button className="btn btn-primary" onClick={goToWelcome}>練習Bootstrap</button>
+      <button className="btn btn-primary" onClick={goToWeek1List}>第一周作業</button>
+    </div>
+  );
+};
 
-      <div
-        className="modal fade"
-        id="exampleModal"
-        ref={modalRef} // 這裡的 ref 正確指向 HTMLDivElement
-        tabIndex={-1}
-        aria-labelledby="exampleModalLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="exampleModalLabel">
-                Modal title
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body">...</div>
-            <div className="modal-footer">
-              <button
-                type="button"
-                className="btn btn-secondary"
-                data-bs-dismiss="modal"
-              >
-                Close
-              </button>
-              <button type="button" className="btn btn-primary">
-                Save changes
-              </button>
-            </div>
+function App() {
+  return (
+    <>
+      <BrowserRouter>
+        <div className="outer_box">
+          <div className="left_area">
+            <Welcome />
+          </div>
+          <div className="right_area">
+            <Navigation />
+            <Routes>
+              <Route path="/" element={<TestBootstrap />} />
+              <Route path="/Week1List" element={<List />} />
+            </Routes>
           </div>
         </div>
-      </div>
-
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card_react">
-        <button
-          className="btn btn-primary"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      </BrowserRouter>
     </>
   );
 }
