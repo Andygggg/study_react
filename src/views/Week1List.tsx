@@ -146,7 +146,7 @@ const List = () => {
               </div>
             </div>
           ) : (
-            <p className="text-secondary">請選擇一個商品查看</p>
+            <p className="text-secondary">請選擇一個商品查看!!</p>
           )}
         </div>
       </div>
