@@ -1,5 +1,5 @@
 import { useState } from "react";
-import listStyles from "../styles/Week1List.module.scss";
+import listStyles from "../../styles/Week1List.module.scss";
 
 interface Product {
   category: string;

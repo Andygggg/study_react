@@ -1,47 +1,85 @@
 import "./App.css";
-import Welcome from "./views/WelcomeReact";
-import TestBootstrap from "./views/TestBootstrap";
-import List from "./views/Week1List";
+import Login from "./views/login/Login";
+import HomeWork from "./views/HexschoolHomework/HomeWork";
+import Week1List from "./views/HexschoolHomework/Week1List";
+import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import { BrowserRouter, Routes, Route, useNavigate } from "react-router-dom";
+interface RouteMeta {
+  title: string;
+}
 
-const Navigation = () => {
-  const navigate = useNavigate();
+interface RouteMenu {
+  path: string;
+  name: string;
+  component: JSX.Element;
+  children?: RouteMenu[];
+  meta: RouteMeta;
+}
 
-  const goToWelcome = () => {
-    navigate("/");
-  };
+const router: RouteMenu[] = [
+  {
+    path: "/",
+    name: "userLogin",
+    component: <Login />,
+    meta: {
+      title: "登入頁面",
+    },
+  },
+  {
+    path: "/hexSchool_homeWork",
+    name: "homeWork",
+    component: <HomeWork />,
+    meta: {
+      title: "六角作業練習",
+    },
+    children: [
+      {
+        path: "week1",
+        name: "List",
+        component: <Week1List />,
+        meta: {
+          title: "第一週",
+        },
+      },
+    ],
+  },
+];
 
-  const goToWeek1List = () => {
-    navigate("/Week1List");
-  };
-
-  return (
-    <div className="menu_navbar">
-      <button className="btn btn-primary" onClick={goToWelcome}>練習Bootstrap</button>
-      <button className="btn btn-primary" onClick={goToWeek1List}>第一周作業</button>
-    </div>
-  );
+const renderRoutes = (routes: RouteMenu[]) => {
+  return routes.map((route) => {
+    if (route.children && route.children.length > 0) {
+      const defaultChild = route.children[0];
+      return (
+        <Route key={route.name} path={route.path} element={route.component}>
+          {/* 當訪問父路徑時，重定向到第一個子路由 */}
+          <Route 
+            index 
+            element={<Navigate to={`${route.path}/${defaultChild.path}`} replace />} 
+          />
+          {route.children.map((child) => (
+            <Route
+              key={child.name}
+              path={child.path}
+              element={child.component}
+            />
+          ))}
+        </Route>
+      );
+    }
+    return <Route key={route.name} path={route.path} element={route.component} />;
+  });
 };
 
-function App() {
+const App = () => {
   return (
-    <>
-      <BrowserRouter>
-        <div className="outer_box">
-          <div className="left_area">
-            <Welcome />
-          </div>
-          <div className="right_area">
-            <Navigation />
-            <Routes>
-              <Route path="/" element={<TestBootstrap />} />
-              <Route path="/Week1List" element={<List />} />
-            </Routes>
-          </div>
-        </div>
-      </BrowserRouter>
-    </>
+    <HashRouter>
+      <div className="outer_box">
+        <Routes>
+          {/* 根路徑重定向到登入頁 */}
+          {renderRoutes(router)}
+        </Routes>
+      </div>
+    </HashRouter>
   );
 }
 
