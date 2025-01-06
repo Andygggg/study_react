@@ -21,10 +21,11 @@ interface Product {
 const api = "https://ec-course-api.hexschool.io/v2";
 const path = "andy_react";
 
+// andyhello31468@gmail.com andy0314
 const Week2Api = () => {
   const [user, setUser] = useState({
-    username: "andyhello31468@gmail.com",
-    password: "andy0314",
+    username: "",
+    password: "",
   });
   const [isActive, setActive] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
