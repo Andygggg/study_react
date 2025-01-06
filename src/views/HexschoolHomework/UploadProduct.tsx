@@ -60,9 +60,27 @@ const UploadProduct = () => {
     try {
       const token =sessionStorage.getItem('access_token')
       axios.defaults.headers.common.Authorization = `${token}`;
-      await axios.post(`${api}/api/${path}/admin/product`, {
+      const res =await axios.post(`${api}/api/${path}/admin/product`, {
         data: uploadData
       });
+
+      if(res.data.success) {
+        alert(res.data.message)
+        setUploadData(
+          {
+            category: "",
+            content: "",
+            description: "",
+            is_enabled: 1,
+            origin_price: 0,
+            price: 0,
+            title: "",
+            unit: "",
+            imageUrl: "",
+            imagesUrl: [""]
+          }
+        )
+      }
     } catch (error) {
       console.log(error);
     }
