@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import listStyles from "../../styles/Week1List.module.scss";
 
 interface Product {
@@ -16,9 +16,9 @@ interface Product {
   imagesUrl: string[];
 }
 
-const List = () => {
+const Week1List = ({ products_data }: {products_data?: Product[]}) => {
   const [tempProduct, setTempProduct] = useState<Product | null>(null);
-  const [products] = useState<Product[]>([
+  const [products, setProducts] = useState<Product[]>([
     {
       category: "甜甜圈",
       content: "尺寸：14x14cm",
@@ -74,6 +74,14 @@ const List = () => {
       ],
     },
   ]);
+
+  useEffect(() => {
+    if (products_data && products_data.length > 0) {
+      setProducts(products_data)
+      console.log(products_data);
+    }
+  }, [products_data])
+  
 
   return (
     <>
@@ -154,4 +162,4 @@ const List = () => {
   );
 };
 
-export default List;
+export default Week1List;

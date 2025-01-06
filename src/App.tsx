@@ -2,6 +2,8 @@ import "./App.css";
 import Login from "./views/login/Login";
 import HomeWork from "./views/HexschoolHomework/HomeWork";
 import Week1List from "./views/HexschoolHomework/Week1List";
+import Week2Api from "./views/HexschoolHomework/Week2Api";
+import UploadProduct from "./views/HexschoolHomework/UploadProduct";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 
 interface RouteMeta {
@@ -39,6 +41,22 @@ const router: RouteMenu[] = [
         component: <Week1List />,
         meta: {
           title: "第一週",
+        },
+      },
+      {
+        path: "week2",
+        name: "ApiWork",
+        component: <Week2Api />,
+        meta: {
+          title: "第二週",
+        },
+      },
+      {
+        path: "upload",
+        name: "UploadProduct",
+        component: <UploadProduct />,
+        meta: {
+          title: "產品上傳",
         },
       },
     ],

@@ -1,0 +1,22 @@
+.login_box {
+  width: 100%;
+  height: 78px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 15px;
+}
+
+.input_row {
+  width: 350px;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  
+  >span {
+    white-space:nowrap; 
+  }
+}
