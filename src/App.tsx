@@ -1,8 +1,8 @@
 import "./App.css";
 import Login from "./views/login/Login";
 import HomeWork from "./views/HexschoolHomework/HomeWork";
-import Week1List from "./views/HexschoolHomework/Week1List";
-import Week2Api from "./views/HexschoolHomework/Week2Api";
+import ProductList from "./views/HexschoolHomework/ProductList";
+import ProductLogin from "./views/HexschoolHomework/ProductLogin";
 import UploadProduct from "./views/HexschoolHomework/UploadProduct";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Provider } from "react-redux";
@@ -38,19 +38,19 @@ const router: RouteMenu[] = [
     },
     children: [
       {
-        path: "week1",
-        name: "List",
-        component: <Week1List />,
+        path: "ProductLogin",
+        name: "ProductLogin",
+        component: <ProductLogin />,
         meta: {
-          title: "第一週",
+          title: "登入",
         },
       },
       {
-        path: "week2",
-        name: "ApiWork",
-        component: <Week2Api />,
+        path: "ProductList",
+        name: "List",
+        component: <ProductList />,
         meta: {
-          title: "第二週",
+          title: "產品列表",
         },
       },
       {

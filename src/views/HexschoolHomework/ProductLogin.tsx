@@ -1,19 +1,19 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import Week1List from "./Week1List";
-import ApiStyles from "../../styles/Week2Api.module.scss";
+import ApiStyles from "../../styles/ProductLogin.module.scss";
 import { RootState, AppDispatch } from '../../stores/store';
 import { loginUser, checkLoginStatus } from '../../stores/userStore';
 import { fetchProducts } from '../../stores/productStore';
+import { useNavigate } from "react-router-dom";
 
-const Week2Api = () => {
+const ProductLogin = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn, loading } = useSelector((state: RootState) => state.user);
-  const { products } = useSelector((state: RootState) => state.products);
   const [user, setUser] = useState({
     username: "andyhello31468@gmail.com",
     password: "andy0314",
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     sessionStorage.removeItem('access_token');
@@ -30,6 +30,7 @@ const Week2Api = () => {
     try {
       await dispatch(loginUser(user)).unwrap();
       await dispatch(fetchProducts());
+      navigate('/hexSchool_homeWork/ProductList');
     } catch (error) {
       console.error('登入失敗:', error);
     }
@@ -60,7 +61,6 @@ const Week2Api = () => {
           檢查是否登入
         </button>
       </div>
-      <Week1List products_data={products} />
     </>
   ) : (
     <div className={ApiStyles.login_box}>
@@ -92,4 +92,4 @@ const Week2Api = () => {
   );
 };
 
-export default Week2Api;
+export default ProductLogin;

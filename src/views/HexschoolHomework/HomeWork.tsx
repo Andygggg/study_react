@@ -10,11 +10,11 @@ const HomeWorkNavbar = () => {
   };
 
   const ToFirst = () => {
-    navigate('/hexSchool_homeWork/week1');
+    navigate('/hexSchool_homeWork/ProductList');
   }
 
   const ToSecond = () => {
-    navigate('/hexSchool_homeWork/week2');
+    navigate('/hexSchool_homeWork/ProductLogin');
   }
 
   const ToUpload = () => {
@@ -24,8 +24,8 @@ const HomeWorkNavbar = () => {
   return (
     <div className={homework_styles.navbar}>
       <span onClick={back}>React每周練習</span>
-      <span onClick={ToFirst}>第一週</span>
-      <span onClick={ToSecond}>第二週</span>
+      <span onClick={ToSecond}>登入</span>
+      <span onClick={ToFirst}>產品列表</span>
       <span onClick={ToUpload}>產品上傳</span>
       <span>第三週</span>
       <span>第四週</span>
