@@ -5,6 +5,8 @@ import Week1List from "./views/HexschoolHomework/Week1List";
 import Week2Api from "./views/HexschoolHomework/Week2Api";
 import UploadProduct from "./views/HexschoolHomework/UploadProduct";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "./stores/store";
 
 interface RouteMeta {
   title: string;
@@ -70,9 +72,11 @@ const renderRoutes = (routes: RouteMenu[]) => {
       return (
         <Route key={route.name} path={route.path} element={route.component}>
           {/* 當訪問父路徑時，重定向到第一個子路由 */}
-          <Route 
-            index 
-            element={<Navigate to={`${route.path}/${defaultChild.path}`} replace />} 
+          <Route
+            index
+            element={
+              <Navigate to={`${route.path}/${defaultChild.path}`} replace />
+            }
           />
           {route.children.map((child) => (
             <Route
@@ -84,21 +88,25 @@ const renderRoutes = (routes: RouteMenu[]) => {
         </Route>
       );
     }
-    return <Route key={route.name} path={route.path} element={route.component} />;
+    return (
+      <Route key={route.name} path={route.path} element={route.component} />
+    );
   });
 };
 
 const App = () => {
   return (
-    <HashRouter>
-      <div className="outer_box">
-        <Routes>
-          {/* 根路徑重定向到登入頁 */}
-          {renderRoutes(router)}
-        </Routes>
-      </div>
-    </HashRouter>
+    <Provider store={store}>
+      <HashRouter>
+        <div className="outer_box">
+          <Routes>
+            {/* 根路徑重定向到登入頁 */}
+            {renderRoutes(router)}
+          </Routes>
+        </div>
+      </HashRouter>
+    </Provider>
   );
-}
+};
 
 export default App;

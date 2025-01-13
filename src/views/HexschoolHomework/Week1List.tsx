@@ -136,8 +136,8 @@ const Week1List = ({ products_data }: {products_data?: Product[]}) => {
                   <span>{tempProduct.content}</span>
                 </div>
                 <div className={listStyles.info_row}>
-                  <span>商品原價：{tempProduct.origin_price}{tempProduct.unit}</span>
-                  <span>商品優惠價：{tempProduct.price}{tempProduct.unit}</span>
+                  <span>商品原價：{tempProduct.origin_price}元</span>
+                  <span>商品優惠價：{tempProduct.price}元</span>
                   <span>商品數量：{tempProduct.num}</span>
                 </div>
                 <div className={listStyles.info_textarea}>

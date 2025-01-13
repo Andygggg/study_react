@@ -1,92 +1,66 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 import Week1List from "./Week1List";
 import ApiStyles from "../../styles/Week2Api.module.scss";
-import axios from "axios";
+import { RootState, AppDispatch } from '../../stores/store';
+import { loginUser, checkLoginStatus } from '../../stores/userStore';
+import { fetchProducts } from '../../stores/productStore';
 
-interface Product {
-  category: string;
-  content: string;
-  description: string;
-  id: string;
-  is_enabled: number;
-  origin_price: number;
-  price: number;
-  title: string;
-  unit: string;
-  num: number;
-  imageUrl: string;
-  imagesUrl: string[];
-}
-
-const api = "https://ec-course-api.hexschool.io/v2";
-const path = "andy_react";
-
-// andyhello31468@gmail.com andy0314
 const Week2Api = () => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { isLoggedIn, loading } = useSelector((state: RootState) => state.user);
+  const { products } = useSelector((state: RootState) => state.products);
   const [user, setUser] = useState({
-    username: "",
-    password: "",
+    username: "andyhello31468@gmail.com",
+    password: "andy0314",
   });
-  const [isActive, setActive] = useState(false);
-  const [products, setProducts] = useState<Product[]>([]);
 
   useEffect(() => {
-    sessionStorage.removeItem('access_token')
-  }, [])
+    sessionStorage.removeItem('access_token');
+  }, []);
 
-  const handleInput = (name: string, value: string | boolean) => {
+  const handleInput = (name: string, value: string) => {
     setUser((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const userLogin = async () => {
+  const handleLogin = async () => {
     try {
-      const res = await axios.post(`${api}/admin/signin`, user);
-      const {token} = res.data
-      sessionStorage.setItem('access_token', token)
-
-      axios.defaults.headers.common.Authorization = `${token}`;
-      await getProduct();
-      setActive(true);
+      await dispatch(loginUser(user)).unwrap();
+      await dispatch(fetchProducts());
     } catch (error) {
-      console.log(error);
+      console.error('登入失敗:', error);
     }
   };
 
-  const checkStatus = async () => {
-    try {
-      const token =sessionStorage.getItem('access_token')
-      axios.defaults.headers.common.Authorization = `${token}`;
-      const res = await axios.post(`${api}/api/user/check`);
-
-      if (res.data.success) {
-        alert('已登入')
-      } else {
-        alert('未登入')
-        setActive(false);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const handleCheckStatus = () => {
+    dispatch(checkLoginStatus())
+      .unwrap()
+      .then((success) => {
+        alert(success ? '已登入' : '未登入');
+      })
+      .catch((error) => {
+        console.error('檢查狀態失敗:', error);
+      });
   };
 
-  const getProduct = async () => {
-    try {
-      const res = await axios.get(`${api}/api/${path}/admin/products`);
-      setProducts(res.data.products);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  return isActive ? (
+  return isLoggedIn ? (
     <>
       <div className={ApiStyles.login_box}>
-        <button className="btn btn-primary" onClick={checkStatus}>檢查是否登入</button>
+        <button 
+          className="btn btn-primary" 
+          onClick={handleCheckStatus}
+        >
+          檢查是否登入
+        </button>
       </div>
-      <Week1List products_data ={products} />
+      <Week1List products_data={products} />
     </>
   ) : (
     <div className={ApiStyles.login_box}>
@@ -102,13 +76,16 @@ const Week2Api = () => {
       <div className={ApiStyles.input_row}>
         <span>密碼：</span>
         <input
-          type="email"
+          type="password"
           className="form-control"
           value={user.password}
           onChange={(e) => handleInput("password", e.target.value)}
         />
       </div>
-      <button className="btn btn-primary" onClick={userLogin}>
+      <button 
+        className="btn btn-primary" 
+        onClick={handleLogin}
+      >
         登入
       </button>
     </div>

@@ -1,26 +1,14 @@
 // UploadProduct.tsx
 import { useState } from "react";
-import axios from "axios";
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../stores/store';
+import { uploadProduct, type Upload } from '../../stores/productStore';
 import styles from "../../styles/UploadProduct.module.scss";
 
-interface Product {
-  category: string;
-  content: string;
-  description: string;
-  is_enabled: number;
-  origin_price: number;
-  price: number;
-  title: string;
-  unit: string;
-  imageUrl: string;
-  imagesUrl: string[];
-}
-
-const api = "https://ec-course-api.hexschool.io/v2";
-const path = "andy_react";
-
 const UploadProduct = () => {
-  const [uploadData, setUploadData] = useState<Product>({
+  const dispatch = useDispatch<AppDispatch>();
+  
+  const [uploadData, setUploadData] = useState<Upload>({
     category: "",
     content: "",
     description: "",
@@ -58,14 +46,10 @@ const UploadProduct = () => {
 
   const upload = async() => {
     try {
-      const token =sessionStorage.getItem('access_token')
-      axios.defaults.headers.common.Authorization = `${token}`;
-      const res =await axios.post(`${api}/api/${path}/admin/product`, {
-        data: uploadData
-      });
+      const data = await dispatch(uploadProduct(uploadData)).unwrap();
 
-      if(res.data.success) {
-        alert(res.data.message)
+      if(data.success) {
+        alert(data.message)
         setUploadData(
           {
             category: "",
