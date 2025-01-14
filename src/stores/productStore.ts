@@ -27,10 +27,15 @@ export const uploadProduct = createAsyncThunk(
 
 export const deleteProduct = createAsyncThunk(
   'products/delete',
-  async (id: string) => {
+  async (id: string, { dispatch }) => {
     try {
-      const res = await apiAuth.delete(`/api/${PATH}/admin/product/${id}`);
-      return res.data
+      const {data} = await apiAuth.delete(`/api/${PATH}/admin/product/${id}`);
+      if(data.success) {
+        alert(data.message)
+        await dispatch(fetchProducts());
+      } else{
+        alert(data.message)
+      }
     } catch (error) {
       console.log(error);
       
