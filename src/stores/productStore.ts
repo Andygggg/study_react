@@ -18,12 +18,23 @@ export const fetchProducts = createAsyncThunk(
 export const uploadProduct = createAsyncThunk(
   'products/upload',
   async (productData: Upload) => {
-    console.log(productData);
-    
     const res = await apiAuth.post(`/api/${PATH}/admin/product`, {
       data: productData
     });
     return res.data;
+  }
+);
+
+export const deleteProduct = createAsyncThunk(
+  'products/delete',
+  async (id: string) => {
+    try {
+      const res = await apiAuth.delete(`/api/${PATH}/admin/product/${id}`);
+      return res.data
+    } catch (error) {
+      console.log(error);
+      
+    }
   }
 );
 
@@ -43,6 +54,16 @@ const productSlice = createSlice({
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || '獲取產品失敗';
+      })
+      .addCase(deleteProduct.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteProduct.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || '刪除失敗';
       });
   }
 });

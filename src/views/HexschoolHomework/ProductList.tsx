@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import listStyles from "../../styles/ProductList.module.scss";
-import { useSelector } from 'react-redux';
-import { RootState } from '../../stores/store';
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../stores/store";
+import { deleteProduct, fetchProducts } from "../../stores/productStore";
 
 interface Product {
   category: string;
@@ -19,14 +20,26 @@ interface Product {
 }
 
 const ProductList = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const [tempProduct, setTempProduct] = useState<Product | null>(null);
   // const [productList, setProductList] = useState<Product[]>([]);
   const { products } = useSelector((state: RootState) => state.products);
+  const delProductItem = async (id: string) => {
+    const data = await dispatch(deleteProduct(id)).unwrap();
+    if(data.success) {
+      alert(data.message)
+      await dispatch(fetchProducts());
+    } else{
+      alert(data.message)
+    }
+  };
 
-  // useEffect(() => {
-  //   setProductList(products)
-  // }, [])
-  
+  useEffect(() => {
+    const fetchData = async () => {
+      await dispatch(fetchProducts());
+    };
+    fetchData();
+  }, [dispatch]);
 
   return (
     <>
@@ -62,16 +75,8 @@ const ProductList = () => {
                         </button>
                       </td>
                       <td>
-                        <button
-                          className="btn btn-danger"
-                        >
-                          刪除
-                        </button>
-                        <button
-                          className="btn btn-primary"
-                        >
-                          編輯
-                        </button>
+                        <button className="btn btn-danger" onClick={() => delProductItem(product.id)}>刪除</button>
+                        <button className="btn btn-primary">編輯</button>
                       </td>
                     </tr>
                   );
@@ -103,11 +108,9 @@ const ProductList = () => {
                 </div>
                 <h5>更多圖片：</h5>
                 <div className={listStyles.info_imgs}>
-                  {
-                    tempProduct.imagesUrl.map((img, idx) => {
-                      return <img key={idx} src={img} />
-                    })
-                  }
+                  {tempProduct.imagesUrl.map((img, idx) => {
+                    return <img key={idx} src={img} />;
+                  })}
                 </div>
               </div>
             </div>
