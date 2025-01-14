@@ -25,13 +25,7 @@ const ProductList = () => {
   // const [productList, setProductList] = useState<Product[]>([]);
   const { products } = useSelector((state: RootState) => state.products);
   const delProductItem = async (id: string) => {
-    const data = await dispatch(deleteProduct(id)).unwrap();
-    if(data.success) {
-      alert(data.message)
-      await dispatch(fetchProducts());
-    } else{
-      alert(data.message)
-    }
+    await dispatch(deleteProduct(id));
   };
 
   useEffect(() => {
