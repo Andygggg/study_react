@@ -3,7 +3,7 @@ import Login from "./views/login/Login";
 import HomeWork from "./views/HexschoolHomework/HomeWork";
 import ProductList from "./views/HexschoolHomework/ProductList";
 import ProductLogin from "./views/HexschoolHomework/ProductLogin";
-import UploadProduct from "./views/HexschoolHomework/UploadProduct";
+import ProductForm from "./views/HexschoolHomework/ProductForm";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./stores/store";
@@ -54,11 +54,11 @@ const router: RouteMenu[] = [
         },
       },
       {
-        path: "upload",
-        name: "UploadProduct",
-        component: <UploadProduct />,
+        path: "ProductForm/:id",
+        name: "ProductForm",
+        component: <ProductForm />,
         meta: {
-          title: "產品上傳",
+          title: "產品細節",
         },
       },
     ],

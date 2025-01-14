@@ -15,13 +15,29 @@ export const fetchProducts = createAsyncThunk(
   }
 );
 
+export const getProduct = createAsyncThunk(
+  'products/getProduct',
+  async (id: string) => {
+    const res = await apiAuth.get(`/api/${PATH}/product/${id}`);
+    return res.data.product;
+  }
+);
+
 export const uploadProduct = createAsyncThunk(
   'products/upload',
-  async (productData: Upload) => {
+  async (productData: Product) => {
     const res = await apiAuth.post(`/api/${PATH}/admin/product`, {
       data: productData
     });
     return res.data;
+  }
+);
+
+export const editProduct = createAsyncThunk(
+  'products/editProduct',
+  async ({ id, data }: { id: string; data: Product }) => {
+    const res = await apiAuth.put(`api/${PATH}/admin/product/${id}`, {data});
+    return res.data.product;
   }
 );
 
@@ -70,7 +86,7 @@ const productSlice = createSlice({
 
 export default productSlice.reducer;
 
-export interface Upload {
+export interface Product {
   category: string;
   content: string;
   description: string;
@@ -83,11 +99,11 @@ export interface Upload {
   imagesUrl: string[];
 }
 
-interface Product {
+export interface Products {
+  id: string;
   category: string;
   content: string;
   description: string;
-  id: string;
   is_enabled: number;
   origin_price: number;
   price: number;
@@ -99,7 +115,7 @@ interface Product {
 }
 
 interface ProductState {
-  products: Product[];
+  products: Products[];
   loading: boolean;
   error: string | null;
 }
