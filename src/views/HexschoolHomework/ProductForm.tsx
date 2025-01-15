@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import { type Product } from "../../stores/productStore";
-import styles from "../../styles/ProductForm.module.scss";
 import { useDispatch } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
+import { type Product } from "../../stores/productStore";
 import { AppDispatch } from "../../stores/store";
 import {
   getProduct,
   editProduct,
   uploadProduct,
 } from "../../stores/productStore";
-import { useParams } from "react-router-dom";
+import FormStyles from "../../styles/ProductForm.module.scss";
+import btnStyles from "../../styles/btn.module.scss";
 
 const ProductForm = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const navigate = useNavigate();
   const { id } = useParams();
 
   const [productData, setProductData] = useState<Product>({
@@ -60,14 +62,14 @@ const ProductForm = () => {
 
   const saveProduct = async () => {
     if (!id || id === "create") {
-      await upload();
+      await addProduvt();
       return;
     }
     const obj = { id: id, data: productData };
     await dispatch(editProduct(obj)).unwrap();
   };
 
-  const upload = async () => {
+  const addProduvt = async () => {
     try {
       const data = await dispatch(uploadProduct(productData)).unwrap();
 
@@ -92,11 +94,19 @@ const ProductForm = () => {
   };
 
   return (
-    <div className={styles.upload_box}>
-      <h2 className={styles.upload_title}>產品編輯</h2>
-      <div className={styles.form_box}>
-        <div className={styles.form_row}>
-          <div className={styles.input_item}>
+    <div className={FormStyles.form_box}>
+      <div className={FormStyles.form_header}>
+        <h2>產品編輯</h2>
+        <button 
+          className={`${btnStyles.btn} ${btnStyles.btnPrimary}`}
+          onClick={() => navigate('/hexSchool_homeWork/ProductList')}
+        >
+          返回列表
+        </button>
+      </div>
+      <div className={FormStyles.form_box}>
+        <div className={FormStyles.form_row}>
+          <div className={FormStyles.input_item}>
             <label>商品名稱</label>
             <input
               type="text"
@@ -104,7 +114,7 @@ const ProductForm = () => {
               onChange={(e) => handleInput("title", e.target.value)}
             />
           </div>
-          <div className={styles.input_item}>
+          <div className={FormStyles.input_item}>
             <label>商品種類</label>
             <input
               type="text"
@@ -114,7 +124,7 @@ const ProductForm = () => {
           </div>
         </div>
 
-        <div className={styles.input_item}>
+        <div className={FormStyles.input_item}>
           <label>商品內容</label>
           <input
             type="text"
@@ -123,8 +133,8 @@ const ProductForm = () => {
           />
         </div>
 
-        <div className={styles.form_row}>
-          <div className={styles.input_item}>
+        <div className={FormStyles.form_row}>
+          <div className={FormStyles.input_item}>
             <label>商品原價</label>
             <input
               type="number"
@@ -134,7 +144,7 @@ const ProductForm = () => {
               }
             />
           </div>
-          <div className={styles.input_item}>
+          <div className={FormStyles.input_item}>
             <label>商品優惠價</label>
             <input
               type="number"
@@ -142,7 +152,7 @@ const ProductForm = () => {
               onChange={(e) => handleInput("price", Number(e.target.value))}
             />
           </div>
-          <div className={styles.input_item}>
+          <div className={FormStyles.input_item}>
             <label>商品單位</label>
             <input
               type="text"
@@ -152,7 +162,7 @@ const ProductForm = () => {
           </div>
         </div>
 
-        <div className={styles.input_item}>
+        <div className={FormStyles.input_item}>
           <label>商品描述</label>
           <textarea
             value={productData.description}
@@ -160,7 +170,7 @@ const ProductForm = () => {
           />
         </div>
 
-        <div className={styles.input_item}>
+        <div className={FormStyles.input_item}>
           <label>主要圖片網址</label>
           <input
             type="text"
@@ -169,7 +179,7 @@ const ProductForm = () => {
           />
         </div>
 
-        <div className={styles.moreImgs}>
+        <div className={FormStyles.moreImgs}>
           <label>更多圖片網址</label>
           {productData.imagesUrl.map((url, index) => (
             <input
@@ -185,22 +195,22 @@ const ProductForm = () => {
         </div>
 
         {productData.imageUrl && (
-          <div className={styles.preview_box}>
+          <div className={FormStyles.preview_box}>
             <h3>預覽主要圖片</h3>
-            <div className={styles.mainImg}>
+            <div className={FormStyles.mainImg}>
               <img src={productData.imageUrl} alt={productData.title} />
             </div>
           </div>
         )}
 
         {productData.imagesUrl.some((url) => url) && (
-          <div className={styles.preview_box}>
+          <div className={FormStyles.preview_box}>
             <h3>預覽更多圖片</h3>
-            <div className={styles.imageGrid}>
+            <div className={FormStyles.imageGrid}>
               {productData.imagesUrl.map(
                 (url, idx) =>
                   url && (
-                    <div key={idx} className={styles.img_item}>
+                    <div key={idx} className={FormStyles.img_item}>
                       <img src={url} alt={`Additional image ${idx + 1}`} />
                     </div>
                   )
@@ -210,7 +220,7 @@ const ProductForm = () => {
         )}
       </div>
 
-      <div className={styles.btn_row}>
+      <div className={FormStyles.btn_row}>
         <button className="btn btn-primary" onClick={saveProduct}>
           儲存
         </button>

@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import listStyles from "../../styles/ProductList.module.scss";
 import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../../stores/store";
-import { deleteProduct, fetchProducts, type Products } from "../../stores/productStore";
 import { useNavigate } from "react-router-dom";
+import { AppDispatch, RootState } from "../../stores/store";
+import { deleteProduct, getproducts, type Products } from "../../stores/productStore";
+import listStyles from "../../styles/ProductList.module.scss";
+import btnStyles from "../../styles/btn.module.scss";
 
 const ProductList = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -15,9 +16,7 @@ const ProductList = () => {
       const { success, message } = await dispatch(deleteProduct(id)).unwrap();
       if (success) {
         alert(message);
-        await dispatch(fetchProducts());
-      } else {
-        alert(message);
+        await dispatch(getproducts());
       }
     } catch (err) {
       console.log(err);
@@ -30,7 +29,7 @@ const ProductList = () => {
   };
 
   useEffect(() => {
-    dispatch(fetchProducts());
+    dispatch(getproducts());
   }, [dispatch]);
 
   if (loading) {
@@ -46,7 +45,7 @@ const ProductList = () => {
       <div className={listStyles.header}>
         <h2>產品列表</h2>
         <button 
-          className={`${listStyles.btn} ${listStyles.btnPrimary}`}
+          className={`${btnStyles.btn} ${btnStyles.btnPrimary}`}
           onClick={() => navigate('/hexSchool_homeWork/ProductForm/create')}
         >
           新增產品
@@ -84,19 +83,19 @@ const ProductList = () => {
                 <td>
                   <div className={listStyles.actions}>
                     <button 
-                      className={`${listStyles.btn} ${listStyles.btnWarning}`}
+                      className={`${btnStyles.btn} ${btnStyles.btnWarning}`}
                       onClick={() => pushToEdit(product)}
                     >
                       查看細節
                     </button>
                     <button 
-                      className={`${listStyles.btn} ${listStyles.btnDanger}`}
+                      className={`${btnStyles.btn} ${btnStyles.btnDanger}`}
                       onClick={() => handleDeleteProduct(product.id)}
                     >
                       刪除
                     </button>
                     <button 
-                      className={`${listStyles.btn} ${listStyles.btnPrimary}`}
+                      className={`${btnStyles.btn} ${btnStyles.btnPrimary}`}
                       onClick={() => navigate(`/hexSchool_homeWork/edit/${product.id}`)}
                     >
                       編輯

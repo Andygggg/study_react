@@ -1,75 +1,89 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { apiAuth, PATH } from '../plugins/axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { apiAuth, PATH } from "../plugins/axios";
 
 const initialState: ProductState = {
   products: [],
   loading: false,
-  error: null
+  error: null,
 };
 
-export const fetchProducts = createAsyncThunk(
-  'products/fetch',
-  async () => {
+export const getproducts = createAsyncThunk("products/getproducts", async () => {
+  try {
     const res = await apiAuth.get(`/api/${PATH}/admin/products`);
     return res.data.products;
+  } catch (error) {
+    console.log(error);
   }
-);
+});
 
 export const getProduct = createAsyncThunk(
-  'products/getProduct',
+  "products/getProduct",
   async (id: string) => {
-    const res = await apiAuth.get(`/api/${PATH}/product/${id}`);
-    return res.data.product;
+    try {
+      const res = await apiAuth.get(`/api/${PATH}/product/${id}`);
+      return res.data.product;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
 export const uploadProduct = createAsyncThunk(
-  'products/upload',
+  "products/upload",
   async (productData: Product) => {
-    const res = await apiAuth.post(`/api/${PATH}/admin/product`, {
-      data: productData
-    });
-    return res.data;
+    try {
+      const res = await apiAuth.post(`/api/${PATH}/admin/product`, {
+        data: productData,
+      });
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
 export const editProduct = createAsyncThunk(
-  'products/editProduct',
+  "products/editProduct",
   async ({ id, data }: { id: string; data: Product }) => {
-    const res = await apiAuth.put(`api/${PATH}/admin/product/${id}`, {data});
-    return res.data.product;
+    try {
+      const res = await apiAuth.put(`api/${PATH}/admin/product/${id}`, {
+        data,
+      });
+      return res.data.product;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
 export const deleteProduct = createAsyncThunk(
-  'products/delete',
+  "products/delete",
   async (id: string) => {
     try {
-      const {data} = await apiAuth.delete(`/api/${PATH}/admin/product/${id}`);
-      return data
+      const { data } = await apiAuth.delete(`/api/${PATH}/admin/product/${id}`);
+      return data;
     } catch (error) {
       console.log(error);
-      
     }
   }
 );
 
 const productSlice = createSlice({
-  name: 'products',
+  name: "products",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProducts.pending, (state) => {
+      .addCase(getproducts.pending, (state) => {
         state.loading = true;
       })
-      .addCase(fetchProducts.fulfilled, (state, action) => {
+      .addCase(getproducts.fulfilled, (state, action) => {
         state.products = action.payload;
         state.loading = false;
       })
-      .addCase(fetchProducts.rejected, (state, action) => {
+      .addCase(getproducts.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || '獲取產品失敗';
+        state.error = action.error.message || "獲取產品失敗";
       })
       .addCase(deleteProduct.pending, (state) => {
         state.loading = true;
@@ -79,9 +93,9 @@ const productSlice = createSlice({
       })
       .addCase(deleteProduct.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || '刪除失敗';
+        state.error = action.error.message || "刪除失敗";
       });
-  }
+  },
 });
 
 export default productSlice.reducer;

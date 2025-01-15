@@ -1,41 +1,49 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { api, apiAuth } from '../plugins/axios';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { api, apiAuth } from "../plugins/axios";
 
 const initialState: UserState = {
-  username: '',
-  password: '',
+  username: "",
+  password: "",
   token: null,
   isLoggedIn: false,
   loading: false,
-  error: null
+  error: null,
 };
 
 export const loginUser = createAsyncThunk(
-  'user/login',
+  "user/login",
   async (user: { username: string; password: string }) => {
-    const res = await api.post('/admin/signin', user);
-    const { token } = res.data;
-    sessionStorage.setItem('access_token', token);
-    return token;
+    try {
+      const res = await api.post("/admin/signin", user);
+      const { token } = res.data;
+      sessionStorage.setItem("access_token", token);
+      return token;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
 export const checkLoginStatus = createAsyncThunk(
-  'user/checkStatus',
+  "user/checkStatus",
   async () => {
-    const res = await apiAuth.post('/api/user/check');
-    return res.data.success;
+    try {
+      const res = await apiAuth.post("/api/user/check");
+      return res.data.success;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     logout: (state) => {
       state.token = null;
       state.isLoggedIn = false;
-      sessionStorage.removeItem('access_token');
+      sessionStorage.removeItem("access_token");
     },
   },
   extraReducers: (builder) => {
@@ -50,12 +58,12 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || '登入失敗';
+        state.error = action.error.message || "登入失敗";
       })
       .addCase(checkLoginStatus.fulfilled, (state, action) => {
         state.isLoggedIn = action.payload;
       });
-  }
+  },
 });
 
 export const { logout } = userSlice.actions;

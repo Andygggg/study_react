@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import ApiStyles from "../../styles/ProductLogin.module.scss";
+import loginStyle from "../../styles/ProductLogin.module.scss";
 import { RootState, AppDispatch } from '../../stores/store';
-import { loginUser, checkLoginStatus } from '../../stores/userStore';
-import { fetchProducts } from '../../stores/productStore';
+import { loginUser, checkLoginStatus, logout } from '../../stores/userStore';
+import { getproducts } from '../../stores/productStore';
 import { useNavigate } from "react-router-dom";
 
 const ProductLogin = () => {
@@ -15,10 +15,6 @@ const ProductLogin = () => {
   });
   const navigate = useNavigate();
 
-  useEffect(() => {
-    sessionStorage.removeItem('access_token');
-  }, []);
-
   const handleInput = (name: string, value: string) => {
     setUser((prev) => ({
       ...prev,
@@ -29,11 +25,15 @@ const ProductLogin = () => {
   const handleLogin = async () => {
     try {
       await dispatch(loginUser(user)).unwrap();
-      await dispatch(fetchProducts());
+      await dispatch(getproducts());
       navigate('/hexSchool_homeWork/ProductList');
     } catch (error) {
       console.error('登入失敗:', error);
     }
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
   };
 
   const handleCheckStatus = () => {
@@ -53,18 +53,25 @@ const ProductLogin = () => {
 
   return isLoggedIn ? (
     <>
-      <div className={ApiStyles.login_box}>
+      <div className={loginStyle.login_box}>
         <button 
           className="btn btn-primary" 
           onClick={handleCheckStatus}
         >
           檢查是否登入
         </button>
+
+        <button 
+          className="btn btn-primary" 
+          onClick={handleLogout}
+        >
+          登出
+        </button>
       </div>
     </>
   ) : (
-    <div className={ApiStyles.login_box}>
-      <div className={ApiStyles.input_row}>
+    <div className={loginStyle.login_box}>
+      <div className={loginStyle.input_row}>
         <span>帳號：</span>
         <input
           type="email"
@@ -73,7 +80,7 @@ const ProductLogin = () => {
           onChange={(e) => handleInput("username", e.target.value)}
         />
       </div>
-      <div className={ApiStyles.input_row}>
+      <div className={loginStyle.input_row}>
         <span>密碼：</span>
         <input
           type="password"

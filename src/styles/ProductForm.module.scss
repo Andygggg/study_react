@@ -1,13 +1,29 @@
-.upload_box {
+.form_box {
   padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.upload_title {
-  font-size: 24px;
-  font-weight: bold;
-  margin-bottom: 20px;
+.form_header {
+  height: 45px;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 576px) {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 24px;
+
+    @media (max-width: 576px) {
+      font-size: 20px;
+    }
+  }
 }
 
 .form_box {
