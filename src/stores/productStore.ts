@@ -49,7 +49,7 @@ export const editProduct = createAsyncThunk(
       const res = await apiAuth.put(`api/${PATH}/admin/product/${id}`, {
         data,
       });
-      return res.data.product;
+      return res.data;
     } catch (error) {
       console.log(error);
     }

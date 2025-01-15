@@ -66,7 +66,8 @@ const ProductForm = () => {
       return;
     }
     const obj = { id: id, data: productData };
-    await dispatch(editProduct(obj)).unwrap();
+    const { message } = await dispatch(editProduct(obj)).unwrap();
+    alert(message);
   };
 
   const addProduvt = async () => {
@@ -97,9 +98,9 @@ const ProductForm = () => {
     <div className={FormStyles.form_box}>
       <div className={FormStyles.form_header}>
         <h2>產品編輯</h2>
-        <button 
+        <button
           className={`${btnStyles.btn} ${btnStyles.btnPrimary}`}
-          onClick={() => navigate('/hexSchool_homeWork/ProductList')}
+          onClick={() => navigate("/hexSchool_homeWork/ProductList")}
         >
           返回列表
         </button>
