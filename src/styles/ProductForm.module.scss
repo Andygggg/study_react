@@ -71,23 +71,40 @@
   }
 }
 
+.input_check {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
 .moreImgs {
   margin-bottom: 20px;
 
   input {
-    width: 100%;
+    width: 90%;
     padding: 8px 12px;
     border: 1px solid #ddd;
     background-color: #fff;
     color: black;
     border-radius: 4px;
-    margin-bottom: 10px;
     font-size: 14px;
 
     &:focus {
       outline: none;
       border-color: #666;
     }
+  }
+
+  .imageUrlInput {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
   }
 }
 

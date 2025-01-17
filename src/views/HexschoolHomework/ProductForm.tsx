@@ -60,9 +60,16 @@ const ProductForm = () => {
     }));
   };
 
+  const removeImageUrl = (indexToRemove: number) => {
+    setProductData((prev) => ({
+      ...prev,
+      imagesUrl: prev.imagesUrl.filter((_, index) => index !== indexToRemove),
+    }));
+  };
+
   const saveProduct = async () => {
     if (!id || id === "create") {
-      await addProduvt();
+      await addProduct();
       return;
     }
     const obj = { id: id, data: productData };
@@ -70,7 +77,7 @@ const ProductForm = () => {
     alert(message);
   };
 
-  const addProduvt = async () => {
+  const addProduct = async () => {
     try {
       const data = await dispatch(uploadProduct(productData)).unwrap();
 
@@ -89,8 +96,9 @@ const ProductForm = () => {
           imagesUrl: [""],
         });
       }
-    } catch (error) {
+    } catch (error: any) {
       console.log(error);
+      alert(error.message);
     }
   };
 
@@ -108,17 +116,19 @@ const ProductForm = () => {
       <div className={FormStyles.form_box}>
         <div className={FormStyles.form_row}>
           <div className={FormStyles.input_item}>
-            <label>商品名稱</label>
+            <label htmlFor="product_title">商品名稱</label>
             <input
               type="text"
+              id="product_title"
               value={productData.title}
               onChange={(e) => handleInput("title", e.target.value)}
             />
           </div>
           <div className={FormStyles.input_item}>
-            <label>商品種類</label>
+            <label htmlFor="product_category">商品種類</label>
             <input
               type="text"
+              id="product_category"
               value={productData.category}
               onChange={(e) => handleInput("category", e.target.value)}
             />
@@ -126,9 +136,10 @@ const ProductForm = () => {
         </div>
 
         <div className={FormStyles.input_item}>
-          <label>商品內容</label>
+          <label htmlFor="product_content">商品內容</label>
           <input
             type="text"
+            id="product_content"
             value={productData.content}
             onChange={(e) => handleInput("content", e.target.value)}
           />
@@ -136,9 +147,11 @@ const ProductForm = () => {
 
         <div className={FormStyles.form_row}>
           <div className={FormStyles.input_item}>
-            <label>商品原價</label>
+            <label htmlFor="product_origin_price">商品原價</label>
             <input
               type="number"
+              id="product_origin_price"
+              min={0}
               value={productData.origin_price}
               onChange={(e) =>
                 handleInput("origin_price", Number(e.target.value))
@@ -146,17 +159,20 @@ const ProductForm = () => {
             />
           </div>
           <div className={FormStyles.input_item}>
-            <label>商品優惠價</label>
+            <label htmlFor="product_price">商品優惠價</label>
             <input
               type="number"
+              id="product_price"
+              min={0}
               value={productData.price}
               onChange={(e) => handleInput("price", Number(e.target.value))}
             />
           </div>
           <div className={FormStyles.input_item}>
-            <label>商品單位</label>
+            <label htmlFor="product_unit">商品單位</label>
             <input
               type="text"
+              id="product_unit"
               value={productData.unit}
               onChange={(e) => handleInput("unit", e.target.value)}
             />
@@ -164,15 +180,28 @@ const ProductForm = () => {
         </div>
 
         <div className={FormStyles.input_item}>
-          <label>商品描述</label>
+          <label htmlFor="product_description">商品描述</label>
           <textarea
             value={productData.description}
+            id="product_description"
             onChange={(e) => handleInput("description", e.target.value)}
           />
         </div>
 
+        <div className={FormStyles.input_check}>
+          <label htmlFor="product_check">是否啟用</label>
+          <input
+            type="checkbox"
+            id="product_check"
+            checked={productData.is_enabled === 1}
+            onChange={(e) =>
+              handleInput("is_enabled", e.target.checked ? 1 : 0)
+            }
+          />
+        </div>
+
         <div className={FormStyles.input_item}>
-          <label>主要圖片網址</label>
+          <label htmlFor="product_imageUrl">主要圖片網址</label>
           <input
             type="text"
             value={productData.imageUrl}
@@ -183,12 +212,20 @@ const ProductForm = () => {
         <div className={FormStyles.moreImgs}>
           <label>更多圖片網址</label>
           {productData.imagesUrl.map((url, index) => (
-            <input
-              key={index}
-              type="text"
-              value={url}
-              onChange={(e) => handleImagesUrl(index, e.target.value)}
-            />
+            <div key={index} className={FormStyles.imageUrlInput}>
+              <input
+                type="text"
+                value={url}
+                onChange={(e) => handleImagesUrl(index, e.target.value)}
+              />
+              <button
+                onClick={() => removeImageUrl(index)}
+                className={`${btnStyles.btn} ${btnStyles.btnDanger}`}
+                type="button"
+              >
+                移除
+              </button>
+            </div>
           ))}
           <button onClick={addImageUrl} className="btn btn-primary">
             新增圖片網址

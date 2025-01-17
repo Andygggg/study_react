@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { AppDispatch, RootState } from "../../stores/store";
-import { deleteProduct, getproducts, type Products } from "../../stores/productStore";
+import { deleteProduct, getProducts, type Products } from "../../stores/productStore";
 import listStyles from "../../styles/ProductList.module.scss";
 import btnStyles from "../../styles/btn.module.scss";
 
@@ -12,24 +12,28 @@ const ProductList = () => {
   const { products, loading, error } = useSelector((state: RootState) => state.products);
 
   const handleDeleteProduct = async (id: string) => {
+    const isYes = confirm("確定要刪除此產品嗎？");
+    if (!isYes) return;
+  
     try {
       const { success, message } = await dispatch(deleteProduct(id)).unwrap();
       if (success) {
         alert(message);
-        await dispatch(getproducts());
+        await dispatch(getProducts()); 
       }
     } catch (err) {
-      console.log(err);
-      alert('刪除產品時發生錯誤');
+      console.error("刪除產品時發生錯誤:", err);
+      alert("刪除產品時發生錯誤");
     }
   };
+  
 
   const pushToEdit = (product: Products) => {
     navigate(`/hexSchool_homeWork/ProductForm/${product.id}`);
   };
 
   useEffect(() => {
-    dispatch(getproducts());
+    dispatch(getProducts());
   }, [dispatch]);
 
   if (loading) {

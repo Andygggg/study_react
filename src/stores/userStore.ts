@@ -12,14 +12,14 @@ const initialState: UserState = {
 
 export const loginUser = createAsyncThunk(
   "user/login",
-  async (user: { username: string; password: string }) => {
+  async (user: { username: string; password: string }, { rejectWithValue }) => {
     try {
       const res = await api.post("/admin/signin", user);
       const { token } = res.data;
       sessionStorage.setItem("access_token", token);
-      return token;
+      return res.data;
     } catch (error) {
-      console.log(error);
+      return rejectWithValue(error || "登入失敗");
     }
   }
 );
@@ -52,13 +52,13 @@ const userSlice = createSlice({
         state.loading = true;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.token = action.payload;
-        state.isLoggedIn = true;
+        state.token = action.payload.token;
+        state.isLoggedIn = action.payload.success;
         state.loading = false;
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(loginUser.rejected, (state) => {
         state.loading = false;
-        state.error = action.error.message || "登入失敗";
+        state.error = "登入失敗";
       })
       .addCase(checkLoginStatus.fulfilled, (state, action) => {
         state.isLoggedIn = action.payload;

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import loginStyle from "../../styles/ProductLogin.module.scss";
-import { RootState, AppDispatch } from '../../stores/store';
-import { loginUser, checkLoginStatus, logout } from '../../stores/userStore';
-import { getproducts } from '../../stores/productStore';
+import { RootState, AppDispatch } from "../../stores/store";
+import { loginUser, checkLoginStatus, logout } from "../../stores/userStore";
+import { getProducts } from "../../stores/productStore";
 import { useNavigate } from "react-router-dom";
 
 const ProductLogin = () => {
@@ -24,11 +24,17 @@ const ProductLogin = () => {
 
   const handleLogin = async () => {
     try {
-      await dispatch(loginUser(user)).unwrap();
-      await dispatch(getproducts());
-      navigate('/hexSchool_homeWork/ProductList');
+      const data = await dispatch(loginUser(user)).unwrap();
+      if (data.success) {
+        await dispatch(getProducts());
+        alert(data.message)
+        navigate("/hexSchool_homeWork/ProductList");
+      } else {
+        alert(data.message)
+      }
     } catch (error) {
-      console.error('登入失敗:', error);
+      alert("登入失敗:")
+      console.error("登入失敗:", error);
     }
   };
 
@@ -40,10 +46,10 @@ const ProductLogin = () => {
     dispatch(checkLoginStatus())
       .unwrap()
       .then((success) => {
-        alert(success ? '已登入' : '未登入');
+        alert(success ? "已登入" : "未登入");
       })
       .catch((error) => {
-        console.error('檢查狀態失敗:', error);
+        console.error("檢查狀態失敗:", error);
       });
   };
 
@@ -54,17 +60,11 @@ const ProductLogin = () => {
   return isLoggedIn ? (
     <>
       <div className={loginStyle.login_box}>
-        <button 
-          className="btn btn-primary" 
-          onClick={handleCheckStatus}
-        >
+        <button className="btn btn-primary" onClick={handleCheckStatus}>
           檢查是否登入
         </button>
 
-        <button 
-          className="btn btn-primary" 
-          onClick={handleLogout}
-        >
+        <button className="btn btn-primary" onClick={handleLogout}>
           登出
         </button>
       </div>
@@ -89,10 +89,7 @@ const ProductLogin = () => {
           onChange={(e) => handleInput("password", e.target.value)}
         />
       </div>
-      <button 
-        className="btn btn-primary" 
-        onClick={handleLogin}
-      >
+      <button className="btn btn-primary" onClick={handleLogin}>
         登入
       </button>
     </div>

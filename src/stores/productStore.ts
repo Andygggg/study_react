@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { apiAuth, PATH } from "../plugins/axios";
+import { api, apiAuth, PATH } from "../plugins/axios";
 
 const initialState: ProductState = {
   products: [],
@@ -7,7 +7,7 @@ const initialState: ProductState = {
   error: null,
 };
 
-export const getproducts = createAsyncThunk("products/getproducts", async () => {
+export const getProducts = createAsyncThunk("products/getProducts", async () => {
   try {
     const res = await apiAuth.get(`/api/${PATH}/admin/products`);
     return res.data.products;
@@ -20,7 +20,7 @@ export const getProduct = createAsyncThunk(
   "products/getProduct",
   async (id: string) => {
     try {
-      const res = await apiAuth.get(`/api/${PATH}/product/${id}`);
+      const res = await api.get(`/api/${PATH}/product/${id}`);
       return res.data.product;
     } catch (error) {
       console.log(error);
@@ -30,14 +30,14 @@ export const getProduct = createAsyncThunk(
 
 export const uploadProduct = createAsyncThunk(
   "products/upload",
-  async (productData: Product) => {
+  async (productData: Product, {rejectWithValue}) => {
     try {
       const res = await apiAuth.post(`/api/${PATH}/admin/product`, {
         data: productData,
       });
       return res.data;
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      return rejectWithValue(error.response.data);
     }
   }
 );
@@ -74,14 +74,14 @@ const productSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getproducts.pending, (state) => {
+      .addCase(getProducts.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getproducts.fulfilled, (state, action) => {
+      .addCase(getProducts.fulfilled, (state, action) => {
         state.products = action.payload;
         state.loading = false;
       })
-      .addCase(getproducts.rejected, (state, action) => {
+      .addCase(getProducts.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || "獲取產品失敗";
       })
