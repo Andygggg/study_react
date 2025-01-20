@@ -6,12 +6,14 @@ import { loginUser, checkLoginStatus, logout } from "../../stores/userStore";
 import { getProducts } from "../../stores/productStore";
 import { useNavigate } from "react-router-dom";
 
+// andyhello31468@gmail.com
+// andy0314
 const ProductLogin = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn, loading } = useSelector((state: RootState) => state.user);
   const [user, setUser] = useState({
-    username: "andyhello31468@gmail.com",
-    password: "andy0314",
+    username: "",
+    password: "",
   });
   const navigate = useNavigate();
 
