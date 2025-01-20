@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
-import DeleteConfirmationModal from "./DeleteConfirmationModal";
+import MessageModal from "./MessageModal";
 import { AppDispatch, RootState } from "../../stores/store";
 import { deleteProduct, getProducts, type Products } from "../../stores/productStore";
 import listStyles from "../../styles/ProductList.module.scss";
@@ -121,12 +121,6 @@ const ProductList = () => {
                     >
                       刪除
                     </button>
-                    <button 
-                      className={`${btnStyles.btn} ${btnStyles.btnPrimary}`}
-                      onClick={() => navigate(`/hexSchool_homeWork/edit/${product.id}`)}
-                    >
-                      編輯
-                    </button>
                   </div>
                 </td>
               </tr>
@@ -140,10 +134,13 @@ const ProductList = () => {
         totalPages={pagination.total_pages}
         onPageChange={handlePageChange}
       />
-      <DeleteConfirmationModal
+
+      <MessageModal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         onConfirm={handleConfirmDelete}
+        title="確認刪除"
+        message='確定要刪除此產品嗎？'
       />
     </div>
   );

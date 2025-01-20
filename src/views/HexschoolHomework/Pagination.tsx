@@ -1,4 +1,3 @@
-// Pagination.tsx
 import { FC } from 'react';
 import styles from "../../styles/Pagination.module.scss";
 

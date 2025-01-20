@@ -34,8 +34,6 @@ const ProductForm = () => {
     (async () => {
       if (!id || id === "create") return;
       const data = await dispatch(getProduct(id)).unwrap();
-      console.log(data);
-            
       setProductData((prev) => ({
         ...prev,
         ...data,

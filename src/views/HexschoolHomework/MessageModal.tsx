@@ -1,7 +1,8 @@
 import React from 'react';
-import styles from "../../styles/DeleteConfirmationModal.module.scss";
+import styles from "../../styles/MessageModal.module.scss";
+import btnStyles from "../../styles/btn.module.scss";
 
-interface DeleteConfirmationModalProps {
+interface MessageModalProps {
   isOpen: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -9,12 +10,12 @@ interface DeleteConfirmationModalProps {
   message?: string;
 }
 
-const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({ 
+const MessageModal: React.FC<MessageModalProps> = ({ 
   isOpen, 
   onClose, 
   onConfirm, 
-  title = "確認刪除", 
-  message = "確定要刪除此產品嗎？" 
+  title, 
+  message
 }) => {
   if (!isOpen) return null;
 
@@ -27,15 +28,15 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
         <div className={styles.modalActions}>
           <button
             onClick={onClose}
-            className={styles.cancelButton}
+            className={`${btnStyles.btn} ${btnStyles.btnDanger}`}
           >
             取消
           </button>
           <button
             onClick={onConfirm}
-            className={styles.confirmButton}
+            className={`${btnStyles.btn} ${btnStyles.btnPrimary}`}
           >
-            確認刪除
+            確認
           </button>
         </div>
       </div>
@@ -43,4 +44,4 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   );
 };
 
-export default DeleteConfirmationModal;
+export default MessageModal;
