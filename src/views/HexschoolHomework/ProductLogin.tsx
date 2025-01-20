@@ -26,7 +26,7 @@ const ProductLogin = () => {
     try {
       const data = await dispatch(loginUser(user)).unwrap();
       if (data.success) {
-        await dispatch(getProducts());
+        await dispatch(getProducts(1));
         alert(data.message)
         navigate("/hexSchool_homeWork/ProductList");
       } else {
