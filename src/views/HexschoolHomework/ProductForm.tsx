@@ -27,13 +27,19 @@ const ProductForm = () => {
     unit: "",
     imageUrl: "",
     imagesUrl: [""],
+    saveYear: 0,
   });
 
   useEffect(() => {
     (async () => {
       if (!id || id === "create") return;
       const data = await dispatch(getProduct(id)).unwrap();
-      setProductData(data);
+      console.log(data);
+            
+      setProductData((prev) => ({
+        ...prev,
+        ...data,
+      }));
     })();
   }, [id, dispatch]);
 
@@ -175,6 +181,16 @@ const ProductForm = () => {
               id="product_unit"
               value={productData.unit}
               onChange={(e) => handleInput("unit", e.target.value)}
+            />
+          </div>
+          <div className={FormStyles.input_item}>
+            <label htmlFor="product_saveYear">保存年分</label>
+            <input
+              type="number"
+              id="product_saveYear"
+              min={0}
+              value={productData.saveYear}
+              onChange={(e) => handleInput("saveYear", e.target.value)}
             />
           </div>
         </div>

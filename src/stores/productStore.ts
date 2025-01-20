@@ -3,18 +3,22 @@ import { api, apiAuth, PATH } from "../plugins/axios";
 
 const initialState: ProductState = {
   products: [],
+  pagination: {} as Pagination,
   loading: false,
   error: null,
 };
 
-export const getProducts = createAsyncThunk("products/getProducts", async () => {
-  try {
-    const res = await apiAuth.get(`/api/${PATH}/admin/products`);
-    return res.data.products;
-  } catch (error) {
-    console.log(error);
+export const getProducts = createAsyncThunk(
+  "products/getProducts",
+  async (page: number = 1) => {
+    try {
+      const res = await apiAuth.get(`/api/${PATH}/admin/products?page=${page}`);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
+);
 
 export const getProduct = createAsyncThunk(
   "products/getProduct",
@@ -30,7 +34,7 @@ export const getProduct = createAsyncThunk(
 
 export const uploadProduct = createAsyncThunk(
   "products/upload",
-  async (productData: Product, {rejectWithValue}) => {
+  async (productData: Product, { rejectWithValue }) => {
     try {
       const res = await apiAuth.post(`/api/${PATH}/admin/product`, {
         data: productData,
@@ -78,7 +82,10 @@ const productSlice = createSlice({
         state.loading = true;
       })
       .addCase(getProducts.fulfilled, (state, action) => {
-        state.products = action.payload;
+        state.products = action.payload.products;
+        state.pagination = action.payload.pagination;
+        console.log(state.pagination);
+
         state.loading = false;
       })
       .addCase(getProducts.rejected, (state, action) => {
@@ -111,6 +118,7 @@ export interface Product {
   unit: string;
   imageUrl: string;
   imagesUrl: string[];
+  saveYear?: number;
 }
 
 export interface Products {
@@ -130,6 +138,15 @@ export interface Products {
 
 interface ProductState {
   products: Products[];
+  pagination: Pagination;
   loading: boolean;
   error: string | null;
+}
+
+interface Pagination {
+  total_pages: number;
+  current_page: number;
+  has_pre: boolean;
+  has_next: boolean;
+  category: string;
 }

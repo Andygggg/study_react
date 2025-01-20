@@ -1,6 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import Pagination from "./Pagination";
+import DeleteConfirmationModal from "./DeleteConfirmationModal";
 import { AppDispatch, RootState } from "../../stores/store";
 import { deleteProduct, getProducts, type Products } from "../../stores/productStore";
 import listStyles from "../../styles/ProductList.module.scss";
@@ -9,31 +11,52 @@ import btnStyles from "../../styles/btn.module.scss";
 const ProductList = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const { products, loading, error } = useSelector((state: RootState) => state.products);
+  const { products, loading, error, pagination } = useSelector((state: RootState) => state.products);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<string | null>(null);
 
   const handleDeleteProduct = async (id: string) => {
-    const isYes = confirm("確定要刪除此產品嗎？");
-    if (!isYes) return;
-  
+    setProductToDelete(id);
+    setIsModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!productToDelete) return;
+
     try {
-      const { success, message } = await dispatch(deleteProduct(id)).unwrap();
+      const { success, message } = await dispatch(deleteProduct(productToDelete)).unwrap();
       if (success) {
         alert(message);
-        await dispatch(getProducts()); 
+        await dispatch(getProducts(1));
       }
     } catch (err) {
       console.error("刪除產品時發生錯誤:", err);
       alert("刪除產品時發生錯誤");
+    } finally {
+      setIsModalOpen(false);
+      setProductToDelete(null);
     }
   };
-  
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setProductToDelete(null);
+  };
+
+
+  // 處理換頁
+  const handlePageChange = async(page: number) => {
+    setCurrentPage(page);
+    await dispatch(getProducts(page)); 
+  };
 
   const pushToEdit = (product: Products) => {
     navigate(`/hexSchool_homeWork/ProductForm/${product.id}`);
   };
 
   useEffect(() => {
-    dispatch(getProducts());
+    dispatch(getProducts(1));
   }, [dispatch]);
 
   if (loading) {
@@ -111,6 +134,17 @@ const ProductList = () => {
           </tbody>
         </table>
       </div>
+
+      <Pagination
+        currentPage={currentPage}
+        totalPages={pagination.total_pages}
+        onPageChange={handlePageChange}
+      />
+      <DeleteConfirmationModal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onConfirm={handleConfirmDelete}
+      />
     </div>
   );
 };
