@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import Pagination from "./Pagination";
 import MessageModal from "./MessageModal";
 import { AppDispatch, RootState } from "../../stores/store";
+import { checkLoginStatus } from "../../stores/userStore";
 import { deleteProduct, getProducts, type Products } from "../../stores/productStore";
 import listStyles from "../../styles/ProductList.module.scss";
 import btnStyles from "../../styles/btn.module.scss";
@@ -56,8 +57,18 @@ const ProductList = () => {
   };
 
   useEffect(() => {
+    (async() => {
+      const msg = await dispatch(checkLoginStatus()).unwrap()
+
+      if(!msg) {
+        alert('未登入')
+        navigate('/hexSchool_homeWork/ProductLogin');
+        return
+      }
+    })()
+    
     dispatch(getProducts(1));
-  }, [dispatch]);
+  }, [dispatch, navigate]);
 
   if (loading) {
     return <div className={listStyles.loading}>載入中...</div>;

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, ChangeEvent  } from "react";
 import { useDispatch } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { type Product } from "../../stores/productStore";
@@ -7,6 +7,7 @@ import {
   getProduct,
   editProduct,
   uploadProduct,
+  uploadImg,
 } from "../../stores/productStore";
 import FormStyles from "../../styles/ProductForm.module.scss";
 import btnStyles from "../../styles/btn.module.scss";
@@ -105,6 +106,20 @@ const ProductForm = () => {
       alert(error.message);
     }
   };
+
+  const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files ?  e.target.files[0] : {};
+    console.log(file);
+
+    if(file) {
+      const img = await dispatch(uploadImg(file)).unwrap()
+
+      setProductData((prev) => ({
+        ...prev,
+        imageUrl: img,
+      }));
+    }
+  }
 
   return (
     <div className={FormStyles.form_box}>
@@ -215,9 +230,24 @@ const ProductForm = () => {
         </div>
 
         <div className={FormStyles.input_item}>
+          <label htmlFor="fileInput" className="form-label">
+            {" "}
+            圖片上傳{" "}
+          </label>
+          <input
+            type="file"
+            accept=".jpg,.jpeg,.png"
+            className="form-control"
+            id="fileInput"
+            onChange={handleFileUpload}
+          />
+        </div>
+
+        <div className={FormStyles.input_item}>
           <label htmlFor="product_imageUrl">主要圖片網址</label>
           <input
             type="text"
+            id="product_imageUrl"
             value={productData.imageUrl}
             onChange={(e) => handleInput("imageUrl", e.target.value)}
           />

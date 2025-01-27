@@ -72,6 +72,21 @@ export const deleteProduct = createAsyncThunk(
   }
 );
 
+export const uploadImg = createAsyncThunk(
+  "products/uploadImg",
+  async (file: any) => {
+    try {
+      const formData = new FormData();
+  formData.append("file-to-upload", file);
+      const { data } = await apiAuth.post(`/api/${PATH}/admin/upload`, formData);
+      return data.imageUrl;
+    } catch (error) {
+      console.log(error);
+      alert("上傳圖片失敗");
+    }
+  }
+);
+
 const productSlice = createSlice({
   name: "products",
   initialState,

@@ -7,7 +7,6 @@ const initialState: UserState = {
   token: null,
   isLoggedIn: false,
   loading: false,
-  error: null,
 };
 
 export const loginUser = createAsyncThunk(
@@ -58,7 +57,6 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state) => {
         state.loading = false;
-        state.error = "登入失敗";
       })
       .addCase(checkLoginStatus.fulfilled, (state, action) => {
         state.isLoggedIn = action.payload;
@@ -75,5 +73,4 @@ interface UserState {
   token: string | null;
   isLoggedIn: boolean;
   loading: boolean;
-  error: string | null;
 }
