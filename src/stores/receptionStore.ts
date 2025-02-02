@@ -3,6 +3,7 @@ import { api, PATH } from "../plugins/axios";
 
 
 interface ProductState {
+  goodsList: any[];
   cartList: any[];
   currentProduct: any;
   cart: {
@@ -19,6 +20,7 @@ interface ProductState {
 }
 
 const initialState: ProductState = {
+  goodsList: [],
   cartList: [],
   currentProduct: null,
   cart: {
@@ -54,34 +56,35 @@ export const getClientProduct = createAsyncThunk(
 export const getClientCart = createAsyncThunk(
   "shopping/getClientCart",
   async () => {
-    const response = await api.get(`/api/${PATH}/cart`);
-    return response.data.data;
+    const res = await api.get(`/api/${PATH}/cart`);
+    return res.data.data;
   }
 );
 
 export const addToCart = createAsyncThunk(
   "shopping/addToCart",
   async ({ id, qty }: { id: string; qty: number }) => {
-    const response = await api.post(`/api/${PATH}/cart`, {
+    const res = await api.post(`/api/${PATH}/cart`, {
       data: {
         product_id: id,
         qty,
       },
     });
-    return response.data;
+    return res.data;
   }
 );
 
 export const updateCartItem = createAsyncThunk(
   "shopping/updateCartItem",
   async ({ id, qty }: { id: string; qty: number }) => {
-    const response = await api.put(`/api/${PATH}/cart/${id}`, {
+    const res = await api.put(`/api/${PATH}/cart/${id}`, {
       data: {
         product_id: id,
         qty,
       },
     });
-    return response.data;
+    
+    return res.data;
   }
 );
 
@@ -107,12 +110,11 @@ const productSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // Fetch Products
       .addCase(getClientProducts.pending, (state) => {
         state.loading = true;
       })
       .addCase(getClientProducts.fulfilled, (state, action) => {
-        state.cartList = action.payload.products;
+        state.goodsList = action.payload.products;
         state.pagination = action.payload.pagination;
         state.loading = false;
       })
@@ -121,49 +123,16 @@ const productSlice = createSlice({
         state.error = action.error.message || null;
       })
 
-      // Fetch Single Product
-      .addCase(getClientProduct.pending, (state, action) => {
-        state.loadingProductId = action.meta.arg;
+      .addCase(getClientCart.pending, (state) => {
+        state.loading = true;
       })
-      .addCase(getClientProduct.fulfilled, (state, action) => {
-        state.currentProduct = action.payload.product;
-        state.loadingProductId = null;
-      })
-      .addCase(getClientProduct.rejected, (state) => {
-        state.loadingProductId = null;
-      })
-
-      // Fetch Cart
       .addCase(getClientCart.fulfilled, (state, action) => {
-        state.cart = action.payload;
+        state.loading = false;
+        state.cartList = action.payload.carts;
       })
-
-      // Add to Cart
-      .addCase(addToCart.pending, (state, action) => {
-        state.loadingCartId = action.meta.arg.id;
+      .addCase(getClientCart.rejected, (state) => {
+        state.loading = false;
       })
-      .addCase(addToCart.fulfilled, (state) => {
-        state.loadingCartId = null;
-      })
-      .addCase(addToCart.rejected, (state) => {
-        state.loadingCartId = null;
-      })
-
-      // Update Cart Item
-      .addCase(updateCartItem.fulfilled, (state) => {
-        console.log(state);
-        
-      })
-
-      // Remove from Cart
-      .addCase(removeFromCart.fulfilled, (state) => {
-        console.log(state);
-      })
-
-      // Clear Cart
-      .addCase(clearCart.fulfilled, (state) => {
-        state.cart.items = [];
-      });
   },
 });
 
