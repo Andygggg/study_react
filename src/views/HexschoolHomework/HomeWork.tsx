@@ -16,12 +16,17 @@ const HomeWorkNavbar = () => {
   const ToSecond = () => {
     navigate('/hexSchool_homeWork/ProductLogin');
   }
+
+  const ToShopping = () => {
+    navigate('/hexSchool_homeWork/ShoppingCart');
+  }
   
   return (
     <div className={homework_styles.navbar}>
       <span onClick={back}>React每周練習</span>
       <span onClick={ToSecond}>登入</span>
       <span onClick={ToFirst}>產品列表</span>
+      <span onClick={ToShopping}>購物車</span>
     </div>
   )
 }

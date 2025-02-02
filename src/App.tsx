@@ -4,6 +4,7 @@ import HomeWork from "./views/HexschoolHomework/HomeWork";
 import ProductList from "./views/HexschoolHomework/ProductList";
 import ProductLogin from "./views/HexschoolHomework/ProductLogin";
 import ProductForm from "./views/HexschoolHomework/ProductForm";
+import ShoppingCart from "./views/HexschoolHomework/ShoppingCart";
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./stores/store";
@@ -59,6 +60,14 @@ const router: RouteMenu[] = [
         component: <ProductForm />,
         meta: {
           title: "產品細節",
+        },
+      },
+      {
+        path: "ShoppingCart",
+        name: "ShoppingCart",
+        component: <ShoppingCart />,
+        meta: {
+          title: "購物車",
         },
       },
     ],
