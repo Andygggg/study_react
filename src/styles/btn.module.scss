@@ -14,6 +14,11 @@ $background-color: #f8f9fa;
     background-color: $hover-background;
     border-color: $hover-background;
   }
+
+  &:disabled {
+    background-color: #919191;
+    color: #ffffff;
+  }
 }
 
 .btn {

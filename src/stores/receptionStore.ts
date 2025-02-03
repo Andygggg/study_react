@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api, PATH } from "../plugins/axios";
 
-
 interface ProductState {
   goodsList: any[];
   cartList: any[];
@@ -13,10 +12,9 @@ interface ProductState {
     current_page: number;
     total_pages: number;
   };
-  loadingProductId: string | null;
-  loadingCartId: string | null;
   loading: boolean;
   error: string | null;
+  loadingCartId: string | null;
 }
 
 const initialState: ProductState = {
@@ -30,79 +28,111 @@ const initialState: ProductState = {
     current_page: 1,
     total_pages: 1,
   },
-  loadingProductId: null,
-  loadingCartId: null,
   loading: false,
   error: null,
+  loadingCartId: null,
 };
 
-// Async Thunks
 export const getClientProducts = createAsyncThunk(
   "shopping/getClientProducts",
   async (page: number = 1) => {
-    const response = await api.get(`/api/${PATH}/products?page=${page}`);
-    return response.data;
+    try {
+      const res = await api.get(`/api/${PATH}/products?page=${page}`);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
 export const getClientProduct = createAsyncThunk(
   "shopping/getClientProduct",
   async (id: string) => {
-    const response = await api.get(`/api/${PATH}/product/${id}`);
-    return response.data;
+    try {
+      const res = await api.get(`/api/${PATH}/product/${id}`);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
 export const getClientCart = createAsyncThunk(
   "shopping/getClientCart",
   async () => {
-    const res = await api.get(`/api/${PATH}/cart`);
-    return res.data.data;
+    try {
+      const res = await api.get(`/api/${PATH}/cart`);
+      return res.data.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
 export const addToCart = createAsyncThunk(
   "shopping/addToCart",
   async ({ id, qty }: { id: string; qty: number }) => {
-    const res = await api.post(`/api/${PATH}/cart`, {
-      data: {
-        product_id: id,
-        qty,
-      },
-    });
-    return res.data;
+    try {
+      const res = await api.post(`/api/${PATH}/cart`, {
+        data: {
+          product_id: id,
+          qty,
+        },
+      });
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
 export const updateCartItem = createAsyncThunk(
   "shopping/updateCartItem",
   async ({ id, qty }: { id: string; qty: number }) => {
-    const res = await api.put(`/api/${PATH}/cart/${id}`, {
-      data: {
-        product_id: id,
-        qty,
-      },
-    });
-    
-    return res.data;
+    try {
+      const res = await api.put(`/api/${PATH}/cart/${id}`, {
+        data: {
+          product_id: id,
+          qty,
+        },
+      });
+
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
 export const delGoods = createAsyncThunk(
   "shopping/delGoods",
   async (id: string) => {
-    const res = await api.delete(`/api/${PATH}/cart/${id}`);
-    return res.data;
+    try {
+      const res = await api.delete(`/api/${PATH}/cart/${id}`);
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
 );
 
-export const delAllCart = createAsyncThunk(
-  "shopping/delAllCart",
-  async () => {
+export const delAllCart = createAsyncThunk("shopping/delAllCart", async () => {
+  try {
     const res = await api.delete(`/api/${PATH}/carts`);
-    return res.data
+    return res.data;
+  } catch (error) {
+    console.log(error);
   }
-);
+});
+
+export const orderCart = createAsyncThunk("shopping/orderCart", async (data: any) => {
+  try {
+    const res = await api.post(`/api/${PATH}/order`, { data: { user: data, message: data.message } });
+    return res.data;
+  } catch (error) {
+    console.log(error);
+  }
+});
 
 const productSlice = createSlice({
   name: "shopping",
@@ -123,16 +153,39 @@ const productSlice = createSlice({
         state.error = action.error.message || null;
       })
 
-      .addCase(getClientCart.pending, (state) => {
-        state.loading = true;
-      })
       .addCase(getClientCart.fulfilled, (state, action) => {
-        state.loading = false;
         state.cartList = action.payload.carts;
       })
-      .addCase(getClientCart.rejected, (state) => {
+
+      .addCase(delGoods.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(delGoods.fulfilled, (state,) => {
         state.loading = false;
       })
+      .addCase(delGoods.rejected, (state) => {
+        state.loading = false;
+      })
+
+      .addCase(delAllCart.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(delAllCart.fulfilled, (state,) => {
+        state.loading = false;
+      })
+      .addCase(delAllCart.rejected, (state) => {
+        state.loading = false;
+      })
+
+      .addCase(orderCart.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(orderCart.fulfilled, (state,) => {
+        state.loading = false;
+      })
+      .addCase(orderCart.rejected, (state) => {
+        state.loading = false;
+      });
   },
 });
 
