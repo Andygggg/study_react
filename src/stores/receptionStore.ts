@@ -88,19 +88,19 @@ export const updateCartItem = createAsyncThunk(
   }
 );
 
-export const removeFromCart = createAsyncThunk(
-  "shopping/removeFromCart",
+export const delGoods = createAsyncThunk(
+  "shopping/delGoods",
   async (id: string) => {
-    await api.delete(`/api/${PATH}/cart/${id}`);
-    return id;
+    const res = await api.delete(`/api/${PATH}/cart/${id}`);
+    return res.data;
   }
 );
 
-export const clearCart = createAsyncThunk(
-  "shopping/clearCart",
+export const delAllCart = createAsyncThunk(
+  "shopping/delAllCart",
   async () => {
-    await api.delete(`/api/${PATH}/carts`);
-    return null;
+    const res = await api.delete(`/api/${PATH}/carts`);
+    return res.data
   }
 );
 

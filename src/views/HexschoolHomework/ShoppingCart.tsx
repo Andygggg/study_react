@@ -5,6 +5,8 @@ import {
   addToCart,
   getClientCart,
   updateCartItem,
+  delAllCart,
+  delGoods,
 } from "@/stores/receptionStore";
 import { useEffect, useState } from "react";
 
@@ -39,12 +41,26 @@ const ShoppingCart = () => {
   const joinCart = async (id: string, qty: number) => {
     const data = await dispatch(addToCart({ id, qty })).unwrap();
     alert(data.message);
+    await dispatch(getClientCart());
   };
 
   const editCart = async (id: string, qty: number) => {
     const data = await dispatch(updateCartItem({ id, qty })).unwrap();
     alert(data.message);
+    await dispatch(getClientCart());
   };
+
+  const clearCart = async () => {
+    const data = await dispatch(delAllCart()).unwrap();
+    alert(data.message);
+    await dispatch(getClientCart());
+  }
+
+  const removeGoods = async (id: string) => {
+    const data = await dispatch(delGoods(id)).unwrap();
+    alert(data.message);
+    await dispatch(getClientCart());
+  }
 
   return (
     <div className={cartStyle.cart_box}>
@@ -109,7 +125,7 @@ const ShoppingCart = () => {
               <th>單位</th>
               <th>單價</th>
               <th>
-                <button className={`${btnStyle.btn} ${btnStyle.btnDanger}`}>
+                <button className={`${btnStyle.btn} ${btnStyle.btnDanger}`} onClick={clearCart}>
                   清空購物車
                 </button>
               </th>
@@ -138,7 +154,9 @@ const ShoppingCart = () => {
                   <td>{cart.product.unit}</td>
                   <td>{cart.product.price}元</td>
                   <td>
-                    <button className={`${btnStyle.btn} ${btnStyle.btnDanger}`}>
+                    <button className={`${btnStyle.btn} ${btnStyle.btnDanger}`} onClick={() => {
+                      removeGoods(cart.id)
+                    }}>
                       移除
                     </button>
                   </td>
