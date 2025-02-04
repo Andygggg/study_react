@@ -1,9 +1,20 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api, PATH } from "../plugins/axios";
 
+interface simpleProduct {
+  id: string;
+  title: string;
+  imageUrl: string;
+  content: string;
+  description: string;
+  origin_price: number;
+  price: number;
+}
+
 interface ProductState {
   goodsList: any[];
   cartList: any[];
+  goods: simpleProduct;
   currentProduct: any;
   cart: {
     items: any[];
@@ -20,6 +31,7 @@ interface ProductState {
 const initialState: ProductState = {
   goodsList: [],
   cartList: [],
+  goods: {} as simpleProduct,
   currentProduct: null,
   cart: {
     items: [],
@@ -155,6 +167,10 @@ const productSlice = createSlice({
 
       .addCase(getClientCart.fulfilled, (state, action) => {
         state.cartList = action.payload.carts;
+      })
+
+      .addCase(getClientProduct.fulfilled, (state, action) => {
+        state.goods = action.payload.product;
       })
 
       .addCase(delGoods.pending, (state) => {

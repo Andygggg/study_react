@@ -8,12 +8,14 @@ import {
   delAllCart,
   delGoods,
   orderCart,
+  getClientProduct,
 } from "@/stores/receptionStore";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import ReactLoading from "react-loading";
 import Pagination from "./Pagination";
+import ProductModal from "./ProductModal";
 
 import cartStyle from "../../styles/ShoppingCart.module.scss";
 import btnStyle from "../../styles/btn.module.scss";
@@ -24,6 +26,7 @@ const ShoppingCart = () => {
   );
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loadingCartId, setLoadingCartId] = useState<string | null>(null);
 
   const {
@@ -78,13 +81,18 @@ const ShoppingCart = () => {
     await dispatch(getClientCart());
   };
 
-  const onSubmit =async  (order: any) => {
+  const onSubmit = async (order: any) => {
     const data = await dispatch(orderCart(order)).unwrap();
-    reset()
+    reset();
 
-    alert(data.message)
+    alert(data.message);
     await dispatch(getClientCart());
   };
+
+  const openModal = async(id :string) => {
+    await dispatch(getClientProduct(id));
+    setIsModalOpen(true)
+  }
 
   return (
     <div className={cartStyle.cart_box}>
@@ -98,7 +106,7 @@ const ShoppingCart = () => {
         <table>
           <thead>
             <tr>
-              <th>圖片</th>
+              <th>產品圖示</th>
               <th>產品名稱</th>
               <th>價錢</th>
               <th></th>
@@ -119,8 +127,9 @@ const ShoppingCart = () => {
                   <td>
                     <button
                       className={`${btnStyle.btn} ${btnStyle.btnWarning}`}
+                      onClick={() => {openModal(cart.id)}}
                     >
-                      查看更多
+                      查看商品
                     </button>
                     <button
                       className={`${btnStyle.btn} ${btnStyle.btnPrimary}`}
@@ -155,12 +164,17 @@ const ShoppingCart = () => {
         onPageChange={handlePageChange}
       />
 
+      <ProductModal
+        isOpen={isModalOpen}
+        onClose={() => {setIsModalOpen(false)}}
+      />
+
       <div className={cartStyle.cart_table}>
         <table>
           <thead>
             <tr>
               <th></th>
-              <th>品名</th>
+              <th>產品名稱</th>
               <th>數量</th>
               <th>單位</th>
               <th>單價</th>
@@ -308,7 +322,12 @@ const ShoppingCart = () => {
         </div>
 
         <div className={cartStyle.submit}>
-          <button type="submit"  className={`${btnStyle.btn} ${btnStyle.btnDanger}`}>送出訂單</button>
+          <button
+            type="submit"
+            className={`${btnStyle.btn} ${btnStyle.btnDanger}`}
+          >
+            送出訂單
+          </button>
         </div>
       </form>
     </div>
