@@ -66,8 +66,8 @@ const ShoppingCart = () => {
     }
   };
 
-  const editCart = async (id: string, qty: number) => {
-    await dispatch(updateCartItem({ id, qty }));
+  const editCart = async (id: string, product_id: string, qty: number) => {
+    await dispatch(updateCartItem({ id, product_id, qty }));
     await dispatch(getClientCart());
   };
 
@@ -89,10 +89,10 @@ const ShoppingCart = () => {
     await dispatch(getClientCart());
   };
 
-  const openModal = async(id :string) => {
+  const openModal = async (id: string) => {
     await dispatch(getClientProduct(id));
-    setIsModalOpen(true)
-  }
+    setIsModalOpen(true);
+  };
 
   return (
     <div className={cartStyle.cart_box}>
@@ -127,7 +127,9 @@ const ShoppingCart = () => {
                   <td>
                     <button
                       className={`${btnStyle.btn} ${btnStyle.btnWarning}`}
-                      onClick={() => {openModal(cart.id)}}
+                      onClick={() => {
+                        openModal(cart.id);
+                      }}
                     >
                       查看商品
                     </button>
@@ -166,7 +168,9 @@ const ShoppingCart = () => {
 
       <ProductModal
         isOpen={isModalOpen}
-        onClose={() => {setIsModalOpen(false)}}
+        onClose={() => {
+          setIsModalOpen(false);
+        }}
       />
 
       <div className={cartStyle.cart_table}>
@@ -182,6 +186,7 @@ const ShoppingCart = () => {
                 <button
                   className={`${btnStyle.btn} ${btnStyle.btnDanger}`}
                   onClick={clearCart}
+                  disabled={cartList.length < 1}
                 >
                   清空購物車
                 </button>
@@ -204,7 +209,11 @@ const ShoppingCart = () => {
                       key={cart.qty}
                       className={cartStyle.number_input}
                       onChange={(e) =>
-                        editCart(cart.id, Number(e.target.value))
+                        editCart(
+                          cart.id,
+                          cart.product_id,
+                          Number(e.target.value)
+                        )
                       }
                     />
                   </td>
@@ -325,6 +334,7 @@ const ShoppingCart = () => {
           <button
             type="submit"
             className={`${btnStyle.btn} ${btnStyle.btnDanger}`}
+            disabled={cartList.length < 1}
           >
             送出訂單
           </button>

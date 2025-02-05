@@ -100,11 +100,19 @@ export const addToCart = createAsyncThunk(
 
 export const updateCartItem = createAsyncThunk(
   "shopping/updateCartItem",
-  async ({ id, qty }: { id: string; qty: number }) => {
+  async ({
+    id,
+    product_id,
+    qty,
+  }: {
+    id: string;
+    product_id: string;
+    qty: number;
+  }) => {
     try {
       const res = await api.put(`/api/${PATH}/cart/${id}`, {
         data: {
-          product_id: id,
+          product_id,
           qty,
         },
       });
@@ -137,14 +145,19 @@ export const delAllCart = createAsyncThunk("shopping/delAllCart", async () => {
   }
 });
 
-export const orderCart = createAsyncThunk("shopping/orderCart", async (data: any) => {
-  try {
-    const res = await api.post(`/api/${PATH}/order`, { data: { user: data, message: data.message } });
-    return res.data;
-  } catch (error) {
-    console.log(error);
+export const orderCart = createAsyncThunk(
+  "shopping/orderCart",
+  async (data: any) => {
+    try {
+      const res = await api.post(`/api/${PATH}/order`, {
+        data: { user: data, message: data.message },
+      });
+      return res.data;
+    } catch (error) {
+      console.log(error);
+    }
   }
-});
+);
 
 const productSlice = createSlice({
   name: "shopping",
@@ -165,8 +178,16 @@ const productSlice = createSlice({
         state.error = action.error.message || null;
       })
 
+      .addCase(getClientCart.pending, (state) => {
+        state.loading = true;
+      })
       .addCase(getClientCart.fulfilled, (state, action) => {
         state.cartList = action.payload.carts;
+        state.loading = false;
+      })
+      .addCase(getClientCart.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.error.message || null;
       })
 
       .addCase(getClientProduct.fulfilled, (state, action) => {
@@ -176,7 +197,7 @@ const productSlice = createSlice({
       .addCase(delGoods.pending, (state) => {
         state.loading = true;
       })
-      .addCase(delGoods.fulfilled, (state,) => {
+      .addCase(delGoods.fulfilled, (state) => {
         state.loading = false;
       })
       .addCase(delGoods.rejected, (state) => {
@@ -186,7 +207,7 @@ const productSlice = createSlice({
       .addCase(delAllCart.pending, (state) => {
         state.loading = true;
       })
-      .addCase(delAllCart.fulfilled, (state,) => {
+      .addCase(delAllCart.fulfilled, (state) => {
         state.loading = false;
       })
       .addCase(delAllCart.rejected, (state) => {
@@ -196,7 +217,7 @@ const productSlice = createSlice({
       .addCase(orderCart.pending, (state) => {
         state.loading = true;
       })
-      .addCase(orderCart.fulfilled, (state,) => {
+      .addCase(orderCart.fulfilled, (state) => {
         state.loading = false;
       })
       .addCase(orderCart.rejected, (state) => {

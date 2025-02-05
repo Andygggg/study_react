@@ -16,8 +16,10 @@ $background-color: #f8f9fa;
   }
 
   &:disabled {
-    background-color: #919191;
-    color: #ffffff;
+    background-color: #858585;
+    border-color: #e7e7e7;
+    color: #fff;
+    cursor: not-allowed;
   }
 }
 
