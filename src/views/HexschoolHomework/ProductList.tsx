@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "@/router/useRouterManger";
 import Pagination from "./Pagination";
 import MessageModal from "./MessageModal";
 import { AppDispatch, RootState } from "../../stores/store";
@@ -11,7 +11,7 @@ import btnStyles from "../../styles/btn.module.scss";
 
 const ProductList = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
+  const router = useRouter();
   const { products, loading, error, pagination } = useSelector((state: RootState) => state.products);
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,7 +53,7 @@ const ProductList = () => {
   };
 
   const pushToEdit = (product: Products) => {
-    navigate(`/hexSchool_homeWork/ProductForm/${product.id}`);
+    router.push(`/hexSchool_homeWork_backstage/ProductForm/${product.id}`);
   };
 
   useEffect(() => {
@@ -62,13 +62,13 @@ const ProductList = () => {
 
       if(!msg) {
         alert('未登入')
-        navigate('/hexSchool_homeWork/ProductLogin');
+        router.push('/hexSchool_homeWork_forestage/ProductLogin');
         return
       }
+
+      // await dispatch(getProducts(1));
     })()
-    
-    dispatch(getProducts(1));
-  }, [dispatch, navigate]);
+  }, [dispatch, router]);
 
   if (loading) {
     return <div className={listStyles.loading}>載入中...</div>;
@@ -84,7 +84,7 @@ const ProductList = () => {
         <h2>產品列表</h2>
         <button 
           className={`${btnStyles.btn} ${btnStyles.btnPrimary}`}
-          onClick={() => navigate('/hexSchool_homeWork/ProductForm/create')}
+          onClick={() => router.push('/hexSchool_homeWork_backstage/ProductForm/create')}
         >
           新增產品
         </button>

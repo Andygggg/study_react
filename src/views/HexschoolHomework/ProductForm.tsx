@@ -1,6 +1,6 @@
 import { useEffect, useState, ChangeEvent  } from "react";
 import { useDispatch } from "react-redux";
-import { useParams, useNavigate } from "react-router-dom";
+import { useRouter } from "@/router/useRouterManger";
 import { type Product } from "../../stores/productStore";
 import { AppDispatch } from "../../stores/store";
 import {
@@ -14,8 +14,8 @@ import btnStyles from "../../styles/btn.module.scss";
 
 const ProductForm = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
-  const { id } = useParams();
+  const router = useRouter();
+  const { id } = router.getRouteParams();
 
   const [productData, setProductData] = useState<Product>({
     category: "",
@@ -127,7 +127,7 @@ const ProductForm = () => {
         <h2>產品編輯</h2>
         <button
           className={`${btnStyles.btn} ${btnStyles.btnPrimary}`}
-          onClick={() => navigate("/hexSchool_homeWork/ProductList")}
+          onClick={() => router.push("/hexSchool_homeWork_backstage/ProductList")}
         >
           返回列表
         </button>

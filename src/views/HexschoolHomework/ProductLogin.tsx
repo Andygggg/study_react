@@ -4,7 +4,7 @@ import loginStyle from "../../styles/ProductLogin.module.scss";
 import { RootState, AppDispatch } from "../../stores/store";
 import { loginUser, checkLoginStatus, logout } from "../../stores/userStore";
 import { getProducts } from "../../stores/productStore";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "@/router/useRouterManger";
 
 // andyhello31468@gmail.com
 // andy0314
@@ -15,7 +15,7 @@ const ProductLogin = () => {
     username: "",
     password: "",
   });
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleInput = (name: string, value: string) => {
     setUser((prev) => ({
@@ -31,7 +31,7 @@ const ProductLogin = () => {
 
       if (data.success) {
         await dispatch(getProducts(1));
-        navigate("/hexSchool_homeWork/ProductList");
+        router.push("/hexSchool_homeWork_backstage");
       }
     } catch (error) {
       alert("登入失敗");

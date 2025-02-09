@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from "@/router/useRouterManger";
 import styles from '../../styles/Login.module.scss';
 
 const Login = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [user, setUser] = useState({
     username: 'xxxxxxxx@gmail.com',
     password: '00000000',
@@ -15,10 +15,6 @@ const Login = () => {
       ...prev,
       [name]: value
     }));
-  };
-
-  const handleLogin = () => {
-    navigate('/hexSchool_homeWork');
   };
 
   return (
@@ -56,7 +52,7 @@ const Login = () => {
           <button 
             type="submit" 
             className={styles.btn_login}
-            onClick={handleLogin}
+            onClick={()=> router.push('/hexSchool_homeWork_forestage')}
           >
             Login
           </button>
