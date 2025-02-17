@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './userStore';
 import productReducer from './productStore';
 import receptionReducer from './receptionStore'
+import messageReducer from './messageStore'
 
 export const store = configureStore({
   reducer: {
     user: userReducer,
     products: productReducer,
-    reception: receptionReducer
+    reception: receptionReducer,
+    message: messageReducer
   }
 });
 

@@ -2,10 +2,24 @@ import homework_styles from "../../styles/HomeWork.module.scss";
 
 import { Outlet } from "react-router-dom";
 import { useRouter } from "@/router/useRouterManger";
+import { logout } from "@/stores/userStore";
+import { openMessage } from "@/stores/messageStore";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../../stores/store";
 
 const HomeWorkNavbar = () => {
   const router = useRouter();
+  const dispatch = useDispatch<AppDispatch>();
   const parentRoute = router.getCurrentParentRoute();
+
+  const userLogout = () => {
+    dispatch(logout());
+    router.push('/hexSchool_homeWork_forestage')
+    dispatch(openMessage({
+      success: true,
+      message: "已登出"
+    }));
+  }
 
   return (
     <div className={homework_styles.navbar}>
@@ -15,6 +29,7 @@ const HomeWorkNavbar = () => {
           return <span key={route.name} onClick={() => router.push(route.path)}>{route.meta.title}</span> 
         }
       }) : ''}
+      <span onClick={userLogout}>登出</span>
     </div>
   );
 };

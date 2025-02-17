@@ -3,6 +3,7 @@ import { HashRouter, Routes } from "react-router-dom";
 import { Provider } from "react-redux";
 import { store } from "./stores/store";
 import { renderRoutes } from '@/router/useRouterManger';
+import MessageToast from "./views/HexschoolHomework/MessageToast";
 
 const App = () => {
   return (
@@ -14,6 +15,7 @@ const App = () => {
           </Routes>
         </div>
       </HashRouter>
+      <MessageToast />
     </Provider>
   );
 };

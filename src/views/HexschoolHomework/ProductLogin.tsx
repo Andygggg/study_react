@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import loginStyle from "../../styles/ProductLogin.module.scss";
 import { RootState, AppDispatch } from "../../stores/store";
-import { loginUser, checkLoginStatus, logout } from "../../stores/userStore";
-import { getProducts } from "../../stores/productStore";
+import { loginUser, checkLoginStatus } from "../../stores/userStore";
+import { openMessage } from "@/stores/messageStore";
+// import { getProducts } from "../../stores/productStore";
 import { useRouter } from "@/router/useRouterManger";
 
 // andyhello31468@gmail.com
@@ -12,8 +13,8 @@ const ProductLogin = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn, loading } = useSelector((state: RootState) => state.user);
   const [user, setUser] = useState({
-    username: "",
-    password: "",
+    username: "andyhello31468@gmail.com",
+    password: "andy0314",
   });
   const router = useRouter();
 
@@ -26,28 +27,33 @@ const ProductLogin = () => {
 
   const handleLogin = async () => {
     try {
-      const data = await dispatch(loginUser(user)).unwrap();
-      alert(data.message);
+      const { message, success } = await dispatch(loginUser(user)).unwrap();
 
-      if (data.success) {
-        await dispatch(getProducts(1));
-        router.push("/hexSchool_homeWork_backstage");
-      }
+      dispatch(
+        openMessage({
+          success,
+          message,
+        })
+      );
+      if (success) router.push("/hexSchool_homeWork_backstage");
     } catch (error) {
-      alert("登入失敗");
+      dispatch(
+        openMessage({
+          success: false,
+          message: "登入失敗",
+        })
+      );
       console.error("登入失敗:", error);
     }
   };
 
-  const handleLogout = () => {
-    dispatch(logout());
-    alert("已登出");
-
-  };
-
   const handleCheckStatus = async () => {
     const msg = await dispatch(checkLoginStatus()).unwrap();
-    alert(msg ? "已登入" : "未登入");
+
+    dispatch(openMessage({
+      success: msg,
+      message: msg ? "已登入" : "未登入"
+    }));
   };
 
   if (loading) {
@@ -59,10 +65,6 @@ const ProductLogin = () => {
       <div className={loginStyle.login_box}>
         <button className="btn btn-primary" onClick={handleCheckStatus}>
           檢查是否登入
-        </button>
-
-        <button className="btn btn-primary" onClick={handleLogout}>
-          登出
         </button>
       </div>
     </>

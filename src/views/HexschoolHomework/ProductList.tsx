@@ -6,6 +6,7 @@ import MessageModal from "./MessageModal";
 import { AppDispatch, RootState } from "../../stores/store";
 import { checkLoginStatus } from "../../stores/userStore";
 import { deleteProduct, getProducts, type Products } from "../../stores/productStore";
+import { openMessage } from "@/stores/messageStore";
 import listStyles from "../../styles/ProductList.module.scss";
 import btnStyles from "../../styles/btn.module.scss";
 
@@ -28,12 +29,18 @@ const ProductList = () => {
     try {
       const { success, message } = await dispatch(deleteProduct(productToDelete)).unwrap();
       if (success) {
-        alert(message);
+        dispatch(openMessage({
+          success,
+          message
+        }));
         await dispatch(getProducts(1));
       }
     } catch (err) {
       console.error("刪除產品時發生錯誤:", err);
-      alert("刪除產品時發生錯誤");
+      dispatch(openMessage({
+        success: false,
+        message: "刪除產品時發生錯誤"
+      }));
     } finally {
       setIsModalOpen(false);
       setProductToDelete(null);
@@ -61,14 +68,18 @@ const ProductList = () => {
       const msg = await dispatch(checkLoginStatus()).unwrap()
 
       if(!msg) {
-        alert('未登入')
+        dispatch(openMessage({
+          success: false,
+          message: "未登入"
+        }));
         router.push('/hexSchool_homeWork_forestage/ProductLogin');
         return
       }
 
-      // await dispatch(getProducts(1));
+      await dispatch(getProducts(1));
     })()
-  }, [dispatch, router]);
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (loading) {
     return <div className={listStyles.loading}>載入中...</div>;
