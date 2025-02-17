@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 
 import ReactLoading from "react-loading";
+import { openMessage } from "@/stores/messageStore";
 
 import cartStyle from "../../styles/ShoppingCart.module.scss";
 import btnStyle from "../../styles/btn.module.scss";
@@ -59,10 +60,15 @@ const ShoppingList = () => {
   };
 
   const onSubmit = async (order: any) => {
-    const data = await dispatch(orderCart(order)).unwrap();
+    const {message, success} = await dispatch(orderCart(order)).unwrap();
     reset();
 
-    alert(data.message);
+    dispatch(
+      openMessage({
+        success,
+        message,
+      })
+    );
     await dispatch(getClientCart());
   };
 

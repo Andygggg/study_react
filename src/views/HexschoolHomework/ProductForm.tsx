@@ -1,4 +1,4 @@
-import { useEffect, useState, ChangeEvent  } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { useDispatch } from "react-redux";
 import { useRouter } from "@/router/useRouterManger";
 import { type Product } from "../../stores/productStore";
@@ -9,6 +9,7 @@ import {
   uploadProduct,
   uploadImg,
 } from "../../stores/productStore";
+import { openMessage } from "@/stores/messageStore";
 import FormStyles from "../../styles/ProductForm.module.scss";
 import btnStyles from "../../styles/btn.module.scss";
 
@@ -17,7 +18,7 @@ const ProductForm = () => {
   const router = useRouter();
   const { id } = router.getRouteParams();
 
-  const [productData, setProductData] = useState<Product>({
+  const initialProductData: Product = {
     category: "",
     content: "",
     description: "",
@@ -29,7 +30,9 @@ const ProductForm = () => {
     imageUrl: "",
     imagesUrl: [""],
     saveYear: 0,
-  });
+  };
+
+  const [productData, setProductData] = useState<Product>(initialProductData);
 
   useEffect(() => {
     (async () => {
@@ -78,48 +81,62 @@ const ProductForm = () => {
       return;
     }
     const obj = { id: id, data: productData };
-    const { message } = await dispatch(editProduct(obj)).unwrap();
-    alert(message);
+    const { success, message } = await dispatch(editProduct(obj)).unwrap();
+
+    dispatch(
+      openMessage({
+        success,
+        message,
+      })
+    );
   };
 
   const addProduct = async () => {
     try {
-      const data = await dispatch(uploadProduct(productData)).unwrap();
+      const { success, message } = await dispatch(
+        uploadProduct(productData)
+      ).unwrap();
 
-      if (data.success) {
-        alert(data.message);
-        setProductData({
-          category: "",
-          content: "",
-          description: "",
-          is_enabled: 1,
-          origin_price: 0,
-          price: 0,
-          title: "",
-          unit: "",
-          imageUrl: "",
-          imagesUrl: [""],
-        });
-      }
+      dispatch(
+        openMessage({
+          success,
+          message,
+        })
+      );
+
+      if (success) setProductData(initialProductData);
     } catch (error: any) {
       console.log(error);
-      alert(error.message);
+      dispatch(
+        openMessage({
+          success: false,
+          message: error.message,
+        })
+      );
     }
   };
 
   const handleFileUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files ?  e.target.files[0] : {};
-    console.log(file);
-
-    if(file) {
-      const img = await dispatch(uploadImg(file)).unwrap()
-
-      setProductData((prev) => ({
-        ...prev,
-        imageUrl: img,
-      }));
+    const file = e.target.files?.[0];
+    if (!file) return;
+  
+    try {
+      const img = await dispatch(uploadImg(file)).unwrap();
+      if (img && img.imageUrl) {
+        dispatch(openMessage({ success: true, message: '上傳成功' }));
+        setProductData((prev) => ({
+          ...prev,
+          imageUrl: img.imageUrl,
+        }));
+      } else {
+        throw new Error('Upload failed - no image URL received');
+      }
+    } catch (error) {
+      console.log(error);
+      
+      dispatch(openMessage({ success: false, message: '上傳失敗' }));
     }
-  }
+  };
 
   return (
     <div className={FormStyles.form_box}>
@@ -127,7 +144,9 @@ const ProductForm = () => {
         <h2>產品編輯</h2>
         <button
           className={`${btnStyles.btn} ${btnStyles.btnPrimary}`}
-          onClick={() => router.push("/hexSchool_homeWork_backstage/ProductList")}
+          onClick={() =>
+            router.push("/hexSchool_homeWork_backstage/ProductList")
+          }
         >
           返回列表
         </button>

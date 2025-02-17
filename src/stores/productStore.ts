@@ -79,10 +79,9 @@ export const uploadImg = createAsyncThunk(
       const formData = new FormData();
   formData.append("file-to-upload", file);
       const { data } = await apiAuth.post(`/api/${PATH}/admin/upload`, formData);
-      return data.imageUrl;
+      return data;
     } catch (error) {
       console.log(error);
-      alert("上傳圖片失敗");
     }
   }
 );
