@@ -13,8 +13,8 @@ const ProductLogin = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoggedIn, loading } = useSelector((state: RootState) => state.user);
   const [user, setUser] = useState({
-    username: "andyhello31468@gmail.com",
-    password: "andy0314",
+    username: "",
+    password: "",
   });
   const router = useRouter();
 
